@@ -1,2 +1,6 @@
-Dati program nije imao segmentation fault a ni kompajlersku gresku, ali je imao  vise kompajlerskih upozorenja, unatoc tome kompajliranje se uspjesno izvrsilo. Medjutim postojao je memory leak jer se zauzeta memorija nije oslobadjala.  Funkcije malloc() i free() su ugradjene u libc tako da program radi ocekivano. Ali ipak bismo trebali ukljuciti odgovarajucu biblioteku, da bismo osigurali konzistentan i pouzdan rad na ostalim sistemima.  
-Upozorenja od strane kompajlera su rjesena ukljucenjem stdlib.h biblioteke i deklaracijom allocate() funkcije prije main-a, dok je memory leak rjesen adekvatnim prosledjivanjem pokazivaca funkciji allocate(). 
+Dati program nije imao segmentation fault a ni kompajlersku gresku, ali je imao  vise kompajlerskih upozorenja,
+unatoc tome kompajliranje se uspjesno izvrsilo. Medjutim postojao je memory leak jer se zauzeta memorija nije oslobadjala.
+Funkcije malloc() i free() su ugradjene u libc tako da program radi ocekivano. 
+Ali ipak bismo trebali ukljuciti odgovarajucu biblioteku, da bismo osigurali konzistentan i pouzdan rad na ostalim sistemima.  
+Upozorenja od strane kompajlera su rjesena ukljucenjem stdlib.h biblioteke i deklaracijom allocate() funkcije 
+prije main-a, dok je memory leak rjesen adekvatnim prosledjivanjem pokazivaca funkciji allocate(). 
