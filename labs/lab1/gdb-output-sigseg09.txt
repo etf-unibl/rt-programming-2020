@@ -1,0 +1,950 @@
+# Djordje Bogdanic 11141/17 
+# pokretanje programa 
+Starting program: /home/djordje/Desktop/purv1/purv1 
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00005555555546b6 in funkcija () at sigseg09.c:35
+35	        c[i] = 'a';
+# uradicemo backtrace
+#0  0x00005555555546b6 in funkcija () at sigseg09.c:35
+#1  0x00005555555546f7 in main (argc=1, argv=0x7fffffffdf28) at sigseg09.c:42
+30	{
+31	    char * c;
+32	    c = malloc(3);
+33	    int i;
+34	    for(i=0; i< 0xffffffff;i++)
+35	        c[i] = 'a';
+36	    printf("\n %s \n", c);
+37	   
+38	}
+39	
+# postavicemp break point-e 
+Breakpoint 1 at 0x555555554692: file sigseg09.c, line 32.
+Breakpoint 2 at 0x5555555546a0: file sigseg09.c, line 33.
+Undefined command: "b35".  Try "help".
+Breakpoint 3 at 0x5555555546a9: file sigseg09.c, line 35.
+# pokrenucemo ponovo program 
+Starting program: /home/djordje/Desktop/purv1/purv1 
+
+Breakpoint 1, funkcija () at sigseg09.c:32
+32	    c = malloc(3);
+c = 0x0
+i = 32767
+$1 = 8
+$2 = (char **) 0x7fffffffde18
+
+Breakpoint 2, funkcija () at sigseg09.c:34
+34	    for(i=0; i< 0xffffffff;i++)
+c = 0x555555756260 ""
+i = 32767
+
+
+
+.
+# da vidimo gdje smo sa registrima i asemblerom 
+Dump of assembler code for function funkcija:
+   0x000055555555468a <+0>:	push   %rbp
+   0x000055555555468b <+1>:	mov    %rsp,%rbp
+   0x000055555555468e <+4>:	sub    $0x10,%rsp
+   0x0000555555554692 <+8>:	mov    $0x3,%edi
+   0x0000555555554697 <+13>:	callq  0x555555554560 <malloc@plt>
+   0x000055555555469c <+18>:	mov    %rax,-0x8(%rbp)
+=> 0x00005555555546a0 <+22>:	movl   $0x0,-0xc(%rbp)
+   0x00005555555546a7 <+29>:	jmp    0x5555555546bd <funkcija+51>
+   0x00005555555546a9 <+31>:	mov    -0xc(%rbp),%eax
+   0x00005555555546ac <+34>:	movslq %eax,%rdx
+   0x00005555555546af <+37>:	mov    -0x8(%rbp),%rax
+   0x00005555555546b3 <+41>:	add    %rdx,%rax
+   0x00005555555546b6 <+44>:	movb   $0x61,(%rax)
+   0x00005555555546b9 <+47>:	addl   $0x1,-0xc(%rbp)
+   0x00005555555546bd <+51>:	cmpl   $0xffffffff,-0xc(%rbp)
+   0x00005555555546c1 <+55>:	jne    0x5555555546a9 <funkcija+31>
+   0x00005555555546c3 <+57>:	mov    -0x8(%rbp),%rax
+   0x00005555555546c7 <+61>:	mov    %rax,%rsi
+   0x00005555555546ca <+64>:	lea    0xb3(%rip),%rdi        # 0x555555554784
+   0x00005555555546d1 <+71>:	mov    $0x0,%eax
+   0x00005555555546d6 <+76>:	callq  0x555555554550 <printf@plt>
+   0x00005555555546db <+81>:	nop
+   0x00005555555546dc <+82>:	leaveq 
+   0x00005555555546dd <+83>:	retq   
+End of assembler dump.
+Dump of assembler code for function funkcija:
+sigseg09.c:
+30	{
+   0x000055555555468a <+0>:	push   %rbp
+   0x000055555555468b <+1>:	mov    %rsp,%rbp
+   0x000055555555468e <+4>:	sub    $0x10,%rsp
+
+31	    char * c;
+32	    c = malloc(3);
+   0x0000555555554692 <+8>:	mov    $0x3,%edi
+   0x0000555555554697 <+13>:	callq  0x555555554560 <malloc@plt>
+   0x000055555555469c <+18>:	mov    %rax,-0x8(%rbp)
+
+33	    int i;
+34	    for(i=0; i< 0xffffffff;i++)
+=> 0x00005555555546a0 <+22>:	movl   $0x0,-0xc(%rbp)
+   0x00005555555546a7 <+29>:	jmp    0x5555555546bd <funkcija+51>
+
+35	        c[i] = 'a';
+   0x00005555555546a9 <+31>:	mov    -0xc(%rbp),%eax
+   0x00005555555546ac <+34>:	movslq %eax,%rdx
+   0x00005555555546af <+37>:	mov    -0x8(%rbp),%rax
+   0x00005555555546b3 <+41>:	add    %rdx,%rax
+   0x00005555555546b6 <+44>:	movb   $0x61,(%rax)
+
+34	    for(i=0; i< 0xffffffff;i++)
+   0x00005555555546b9 <+47>:	addl   $0x1,-0xc(%rbp)
+   0x00005555555546bd <+51>:	cmpl   $0xffffffff,-0xc(%rbp)
+   0x00005555555546c1 <+55>:	jne    0x5555555546a9 <funkcija+31>
+
+36	    printf("\n %s \n", c);
+   0x00005555555546c3 <+57>:	mov    -0x8(%rbp),%rax
+   0x00005555555546c7 <+61>:	mov    %rax,%rsi
+   0x00005555555546ca <+64>:	lea    0xb3(%rip),%rdi        # 0x555555554784
+   0x00005555555546d1 <+71>:	mov    $0x0,%eax
+   0x00005555555546d6 <+76>:	callq  0x555555554550 <printf@plt>
+
+37	   
+38	}
+   0x00005555555546db <+81>:	nop
+   0x00005555555546dc <+82>:	leaveq 
+   0x00005555555546dd <+83>:	retq   
+End of assembler dump.
+0x00005555555546a7	34	    for(i=0; i< 0xffffffff;i++)
+# da ispratimo registre u ovom dijelu koda
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756260
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+c = 0x555555756260 ""
+i = 0
+Hardware watchpoint 4: c[i]
+$6 = 0 '\000'
+0x00005555555546bd	34	    for(i=0; i< 0xffffffff;i++)
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756260
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+c = 0x555555756260 ""
+i = 0
+0x00005555555546c1	34	    for(i=0; i< 0xffffffff;i++)
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756260
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+
+Breakpoint 3, funkcija () at sigseg09.c:35
+35	        c[i] = 'a';
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756260
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+0x00005555555546ac	35	        c[i] = 'a';
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x0
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+0x00005555555546af	35	        c[i] = 'a';
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x0
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+0x00005555555546b3	35	        c[i] = 'a';
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756260
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+0x00005555555546b6	35	        c[i] = 'a';
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756260
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+34	    for(i=0; i< 0xffffffff;i++)
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756260
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+0x00005555555546bd	34	    for(i=0; i< 0xffffffff;i++)
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756260
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+0x00005555555546c1	34	    for(i=0; i< 0xffffffff;i++)
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756260
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+c = 0x555555756260 "a"
+i = 1
+
+Breakpoint 3, funkcija () at sigseg09.c:35
+35	        c[i] = 'a';
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756260
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+0x00005555555546ac	35	        c[i] = 'a';
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x1
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+0x00005555555546af	35	        c[i] = 'a';
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x1
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+0x00005555555546b3	35	        c[i] = 'a';
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756260
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+0x00005555555546b6	35	        c[i] = 'a';
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756261
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+34	    for(i=0; i< 0xffffffff;i++)
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756261
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+0x00005555555546bd	34	    for(i=0; i< 0xffffffff;i++)
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756261
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+c = 0x555555756260 "aa"
+i = 2
+0x00005555555546c1	34	    for(i=0; i< 0xffffffff;i++)
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756261
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+
+Breakpoint 3, funkcija () at sigseg09.c:35
+35	        c[i] = 'a';
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756261
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+0x00005555555546ac	35	        c[i] = 'a';
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x2
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+c = 0x555555756260 "aa"
+i = 2
+0x00005555555546af	35	        c[i] = 'a';
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x2
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+c = 0x555555756260 "aa"
+i = 2
+0x00005555555546b3	35	        c[i] = 'a';
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756260
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+c = 0x555555756260 "aa"
+i = 2
+0x00005555555546b6	35	        c[i] = 'a';
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756262
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+c = 0x555555756260 "aa"
+i = 2
+34	    for(i=0; i< 0xffffffff;i++)
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756262
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+29	void funkcija()
+30	{
+31	    char * c;
+32	    c = malloc(3);
+33	    int i;
+34	    for(i=0; i< 0xffffffff;i++)
+35	        c[i] = 'a';
+36	    printf("\n %s \n", c);
+37	   
+38	}
+0x00005555555546bd	34	    for(i=0; i< 0xffffffff;i++)
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756262
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+c = 0x555555756260 "aaa"
+i = 3
+0x00005555555546c1	34	    for(i=0; i< 0xffffffff;i++)
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756262
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+
+Breakpoint 3, funkcija () at sigseg09.c:35
+35	        c[i] = 'a';
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756262
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+c = 0x555555756260 "aaa"
+i = 3
+Undefined command: "dissas".  Try "help".
+Dump of assembler code for function funkcija:
+sigseg09.c:
+30	{
+   0x000055555555468a <+0>:	push   %rbp
+   0x000055555555468b <+1>:	mov    %rsp,%rbp
+   0x000055555555468e <+4>:	sub    $0x10,%rsp
+
+31	    char * c;
+32	    c = malloc(3);
+   0x0000555555554692 <+8>:	mov    $0x3,%edi
+   0x0000555555554697 <+13>:	callq  0x555555554560 <malloc@plt>
+   0x000055555555469c <+18>:	mov    %rax,-0x8(%rbp)
+
+33	    int i;
+34	    for(i=0; i< 0xffffffff;i++)
+   0x00005555555546a0 <+22>:	movl   $0x0,-0xc(%rbp)
+   0x00005555555546a7 <+29>:	jmp    0x5555555546bd <funkcija+51>
+
+35	        c[i] = 'a';
+=> 0x00005555555546a9 <+31>:	mov    -0xc(%rbp),%eax
+   0x00005555555546ac <+34>:	movslq %eax,%rdx
+   0x00005555555546af <+37>:	mov    -0x8(%rbp),%rax
+   0x00005555555546b3 <+41>:	add    %rdx,%rax
+   0x00005555555546b6 <+44>:	movb   $0x61,(%rax)
+
+34	    for(i=0; i< 0xffffffff;i++)
+   0x00005555555546b9 <+47>:	addl   $0x1,-0xc(%rbp)
+   0x00005555555546bd <+51>:	cmpl   $0xffffffff,-0xc(%rbp)
+   0x00005555555546c1 <+55>:	jne    0x5555555546a9 <funkcija+31>
+
+36	    printf("\n %s \n", c);
+   0x00005555555546c3 <+57>:	mov    -0x8(%rbp),%rax
+   0x00005555555546c7 <+61>:	mov    %rax,%rsi
+   0x00005555555546ca <+64>:	lea    0xb3(%rip),%rdi        # 0x555555554784
+   0x00005555555546d1 <+71>:	mov    $0x0,%eax
+   0x00005555555546d6 <+76>:	callq  0x555555554550 <printf@plt>
+
+37	   
+38	}
+   0x00005555555546db <+81>:	nop
+   0x00005555555546dc <+82>:	leaveq 
+   0x00005555555546dd <+83>:	retq   
+End of assembler dump.
+0x00005555555546ac	35	        c[i] = 'a';
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x3
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+c = 0x555555756260 "aaa"
+i = 3
+0x00005555555546af	35	        c[i] = 'a';
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x3
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+0x00005555555546b3	35	        c[i] = 'a';
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756260
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+c = 0x555555756260 "aaa"
+i = 3
+0x00005555555546b6	35	        c[i] = 'a';
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756263
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+34	    for(i=0; i< 0xffffffff;i++)
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756263
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+c = 0x555555756260 "aaaa"
+i = 3
+Bad format string, missing '"'.
+$7 = 8
+rax            0x555555756263	93824994337379
+rbx            0x0	0
+rcx            0x555555756260	93824994337376
+rdx            0x3	3
+rsi            0x0	0
+rdi            0x555555756270	93824994337392
+rbp            0x7fffffffde20	0x7fffffffde20
+rsp            0x7fffffffde10	0x7fffffffde10
+r8             0x2	2
+r9             0x0	0
+r10            0x555555756010	93824994336784
+r11            0x0	0
+r12            0x555555554580	93824992232832
+r13            0x7fffffffdf20	140737488346912
+r14            0x0	0
+r15            0x0	0
+rip            0x5555555546b9	0x5555555546b9 <funkcija+47>
+eflags         0x206	[ PF IF ]
+cs             0x33	51
+ss             0x2b	43
+ds             0x0	0
+es             0x0	0
+fs             0x0	0
+gs             0x0	0
+$8 = 0 '\000'
+$9 = 97 'a'
+$10 = 1
+# kao sto mozemo da vidimo alocirali smo memoriju za 3 karaktera,ali program nastavlja dalje da upisuje,tj pristupa memoriji tako da imamo array out of bounds ili indeks out of bound ili kako se vec zove,to se desava zato sto petlja vrti do 0xffffffff sto je ogromno tako da cemo postaviti petlju da ide do 3,sto je racionalnije nego da alociramo memoriju za 0xffffffff B 
+0x00005555555546bd	34	    for(i=0; i< 0xffffffff;i++)
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756263
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+c = 0x555555756260 "aaaa"
+i = 4
+#0  0x00005555555546bd in funkcija () at sigseg09.c:34
+34	    for(i=0; i< 0xffffffff;i++)
+#0  0x00005555555546bd in funkcija () at sigseg09.c:34
+34	    for(i=0; i< 0xffffffff;i++)
+Run till exit from #0  0x00005555555546bd in funkcija () at sigseg09.c:34
+
+Breakpoint 3, funkcija () at sigseg09.c:35
+35	        c[i] = 'a';
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756263
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+Run till exit from #0  funkcija () at sigseg09.c:35
+
+Hardware watchpoint 4: c[i]
+
+Old value = 0 '\000'
+New value = 97 'a'
+funkcija () at sigseg09.c:34
+34	    for(i=0; i< 0xffffffff;i++)
+1: /a $rpb = <error: Value can't be converted to integer.>
+2: /a $rax = 0x555555756264
+3: /a $rsp = 0x7fffffffde10
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+6: /a $sp = 0x7fffffffde10
+7: /a $rbp = 0x7fffffffde20
+
+
+
+
+
+
+
+# pokrecemo prepravljen program 
+Starting program: /home/djordje/Desktop/purv1/purv1 
+[Inferior 1 (process 14359) exited normally]
+The program has no registers now.
+Breakpoint 1 at 0x555555554692: file sigseg09.c, line 32.
+Starting program: /home/djordje/Desktop/purv1/purv1 
+
+Breakpoint 1, funkcija () at sigseg09.c:32
+32	    c = malloc(3);
+Dump of assembler code for function funkcija:
+sigseg09.c:
+30	{
+   0x000055555555468a <+0>:	push   %rbp
+   0x000055555555468b <+1>:	mov    %rsp,%rbp
+   0x000055555555468e <+4>:	sub    $0x10,%rsp
+
+31	    char * c;
+32	    c = malloc(3);
+=> 0x0000555555554692 <+8>:	mov    $0x3,%edi
+   0x0000555555554697 <+13>:	callq  0x555555554560 <malloc@plt>
+   0x000055555555469c <+18>:	mov    %rax,-0x8(%rbp)
+
+33	    int i;
+34	    for(i=0; i<3;i++)
+   0x00005555555546a0 <+22>:	movl   $0x0,-0xc(%rbp)
+   0x00005555555546a7 <+29>:	jmp    0x5555555546bd <funkcija+51>
+
+35	        c[i] = 'a';
+   0x00005555555546a9 <+31>:	mov    -0xc(%rbp),%eax
+   0x00005555555546ac <+34>:	movslq %eax,%rdx
+   0x00005555555546af <+37>:	mov    -0x8(%rbp),%rax
+   0x00005555555546b3 <+41>:	add    %rdx,%rax
+   0x00005555555546b6 <+44>:	movb   $0x61,(%rax)
+
+34	    for(i=0; i<3;i++)
+   0x00005555555546b9 <+47>:	addl   $0x1,-0xc(%rbp)
+   0x00005555555546bd <+51>:	cmpl   $0x2,-0xc(%rbp)
+   0x00005555555546c1 <+55>:	jle    0x5555555546a9 <funkcija+31>
+
+36	    printf("\n %s \n", c);
+   0x00005555555546c3 <+57>:	mov    -0x8(%rbp),%rax
+   0x00005555555546c7 <+61>:	mov    %rax,%rsi
+   0x00005555555546ca <+64>:	lea    0xb3(%rip),%rdi        # 0x555555554784
+   0x00005555555546d1 <+71>:	mov    $0x0,%eax
+   0x00005555555546d6 <+76>:	callq  0x555555554550 <printf@plt>
+
+37	   
+38	}
+   0x00005555555546db <+81>:	nop
+   0x00005555555546dc <+82>:	leaveq 
+   0x00005555555546dd <+83>:	retq   
+End of assembler dump.
+0x0000555555554697	32	    c = malloc(3);
+Dump of assembler code for function funkcija:
+sigseg09.c:
+30	{
+   0x000055555555468a <+0>:	push   %rbp
+   0x000055555555468b <+1>:	mov    %rsp,%rbp
+   0x000055555555468e <+4>:	sub    $0x10,%rsp
+
+31	    char * c;
+32	    c = malloc(3);
+   0x0000555555554692 <+8>:	mov    $0x3,%edi
+=> 0x0000555555554697 <+13>:	callq  0x555555554560 <malloc@plt>
+   0x000055555555469c <+18>:	mov    %rax,-0x8(%rbp)
+
+33	    int i;
+34	    for(i=0; i<3;i++)
+   0x00005555555546a0 <+22>:	movl   $0x0,-0xc(%rbp)
+   0x00005555555546a7 <+29>:	jmp    0x5555555546bd <funkcija+51>
+
+35	        c[i] = 'a';
+   0x00005555555546a9 <+31>:	mov    -0xc(%rbp),%eax
+   0x00005555555546ac <+34>:	movslq %eax,%rdx
+   0x00005555555546af <+37>:	mov    -0x8(%rbp),%rax
+   0x00005555555546b3 <+41>:	add    %rdx,%rax
+   0x00005555555546b6 <+44>:	movb   $0x61,(%rax)
+
+34	    for(i=0; i<3;i++)
+   0x00005555555546b9 <+47>:	addl   $0x1,-0xc(%rbp)
+   0x00005555555546bd <+51>:	cmpl   $0x2,-0xc(%rbp)
+   0x00005555555546c1 <+55>:	jle    0x5555555546a9 <funkcija+31>
+
+36	    printf("\n %s \n", c);
+   0x00005555555546c3 <+57>:	mov    -0x8(%rbp),%rax
+   0x00005555555546c7 <+61>:	mov    %rax,%rsi
+   0x00005555555546ca <+64>:	lea    0xb3(%rip),%rdi        # 0x555555554784
+   0x00005555555546d1 <+71>:	mov    $0x0,%eax
+   0x00005555555546d6 <+76>:	callq  0x555555554550 <printf@plt>
+
+37	   
+38	}
+   0x00005555555546db <+81>:	nop
+   0x00005555555546dc <+82>:	leaveq 
+   0x00005555555546dd <+83>:	retq   
+End of assembler dump.
+0x0000555555554560 in malloc@plt ()
+#0  0x0000555555554560 in malloc@plt ()
+Single stepping until exit from function malloc@plt,
+which has no line number information.
+__GI___libc_malloc (bytes=3) at malloc.c:3028
+3028	malloc.c: No such file or directory.
+0x00007ffff7a7b071	3028	in malloc.c
+3033	in malloc.c
+Dump of assembler code for function __GI___libc_malloc:
+malloc.c:
+3028	in malloc.c
+   0x00007ffff7a7b070 <+0>:	push   %rbp
+   0x00007ffff7a7b071 <+1>:	push   %rbx
+   0x00007ffff7a7b072 <+2>:	sub    $0x18,%rsp
+
+3029	in malloc.c
+3030	in malloc.c
+3031	in malloc.c
+3032	in malloc.c
+3033	in malloc.c
+=> 0x00007ffff7a7b076 <+6>:	mov    0x353e63(%rip),%rax        # 0x7ffff7dceee0
+   0x00007ffff7a7b07d <+13>:	mov    (%rax),%rax
+
+3034	in malloc.c
+   0x00007ffff7a7b080 <+16>:	test   %rax,%rax
+   0x00007ffff7a7b083 <+19>:	jne    0x7ffff7a7b270 <__GI___libc_malloc+512>
+
+3036	in malloc.c
+3037	in malloc.c
+3038	in malloc.c
+3039	in malloc.c
+   0x00007ffff7a7b089 <+25>:	lea    0x17(%rdi),%rax
+   0x00007ffff7a7b08d <+29>:	cmp    $0x1f,%rax
+   0x00007ffff7a7b091 <+33>:	ja     0x7ffff7a7b1a0 <__GI___libc_malloc+304>
+   0x00007ffff7a7b097 <+39>:	xor    %edx,%edx
+   0x00007ffff7a7b099 <+41>:	mov    $0x20,%eax
+   0x00007ffff7a7b09e <+46>:	cmp    %rdi,%rax
+   0x00007ffff7a7b0a1 <+49>:	jb     0x7ffff7a7b280 <__GI___libc_malloc+528>
+   0x00007ffff7a7b0a7 <+55>:	test   %dl,%dl
+   0x00007ffff7a7b0a9 <+57>:	jne    0x7ffff7a7b280 <__GI___libc_malloc+528>
+
+3041	in malloc.c
+3042	in malloc.c
+   0x00007ffff7a7b0af <+63>:	mov    0x353cc2(%rip),%rbp        # 0x7ffff7dced78
+
+3040	in malloc.c
+   0x00007ffff7a7b0b6 <+70>:	sub    $0x11,%rax
+   0x00007ffff7a7b0ba <+74>:	mov    %rdi,%rbx
+   0x00007ffff7a7b0bd <+77>:	shr    $0x4,%rax
+
+3041	in malloc.c
+3042	in malloc.c
+   0x00007ffff7a7b0c1 <+81>:	mov    %fs:0x0(%rbp),%rcx
+   0x00007ffff7a7b0c6 <+86>:	test   %rcx,%rcx
+   0x00007ffff7a7b0c9 <+89>:	je     0x7ffff7a7b1b0 <__GI___libc_malloc+320>
+
+3043	in malloc.c
+3044	in malloc.c
+3045	in malloc.c
+   0x00007ffff7a7b0cf <+95>:	cmp    0x3541fa(%rip),%rax        # 0x7ffff7dcf2d0 <mp_+80>
+   0x00007ffff7a7b0d6 <+102>:	jb     0x7ffff7a7b1f0 <__GI___libc_malloc+384>
+
+3049	in malloc.c
+3050	in malloc.c
+3051	in malloc.c
+3052	in malloc.c
+3053	in malloc.c
+3054	in malloc.c
+3055	in malloc.c
+   0x00007ffff7a7b0dc <+108>:	lea    0x359815(%rip),%rax        # 0x7ffff7dd48f8 <__libc_multiple_threads>
+   0x00007ffff7a7b0e3 <+115>:	mov    (%rax),%eax
+   0x00007ffff7a7b0e5 <+117>:	test   %eax,%eax
+   0x00007ffff7a7b0e7 <+119>:	jne    0x7ffff7a7b298 <__GI___libc_malloc+552>
+
+3056	in malloc.c
+3057	in malloc.c
+   0x00007ffff7a7b0ed <+125>:	lea    0x354b4c(%rip),%rdi        # 0x7ffff7dcfc40 <main_arena>
+   0x00007ffff7a7b0f4 <+132>:	mov    %rbx,%rsi
+   0x00007ffff7a7b0f7 <+135>:	callq  0x7ffff7a782d0 <_int_malloc>
+
+3058	in malloc.c
+   0x00007ffff7a7b0fc <+140>:	test   %rax,%rax
+
+3057	in malloc.c
+   0x00007ffff7a7b0ff <+143>:	mov    %rax,%rdx
+
+3058	in malloc.c
+   0x00007ffff7a7b102 <+146>:	je     0x7ffff7a7b260 <__GI___libc_malloc+496>
+   0x00007ffff7a7b108 <+152>:	mov    -0x8(%rax),%rax
+   0x00007ffff7a7b10c <+156>:	test   $0x2,%al
+   0x00007ffff7a7b10e <+158>:	jne    0x7ffff7a7b212 <__GI___libc_malloc+418>
+   0x00007ffff7a7b114 <+164>:	test   $0x4,%al
+   0x00007ffff7a7b116 <+166>:	je     0x7ffff7a7b212 <__GI___libc_malloc+418>
+   0x00007ffff7a7b11c <+172>:	lea    -0x10(%rdx),%rax
+   0x00007ffff7a7b120 <+176>:	lea    0x354b19(%rip),%rcx        # 0x7ffff7dcfc40 <main_arena>
+   0x00007ffff7a7b127 <+183>:	and    $0xfffffffffc000000,%rax
+   0x00007ffff7a7b12d <+189>:	cmp    %rcx,(%rax)
+   0x00007ffff7a7b130 <+192>:	je     0x7ffff7a7b212 <__GI___libc_malloc+418>
+
+293	in malloc.c
+   0x00007ffff7a7b136 <+198>:	mov    0x353cb3(%rip),%rax        # 0x7ffff7dcedf0
+
+292	in malloc.c
+   0x00007ffff7a7b13d <+205>:	lea    0x11cb35(%rip),%rcx        # 0x7ffff7b97c79
+   0x00007ffff7a7b144 <+212>:	lea    0x121bcd(%rip),%rbx        # 0x7ffff7b9cd18
+   0x00007ffff7a7b14b <+219>:	mov    $0xbf3,%r9d
+
+293	in malloc.c
+   0x00007ffff7a7b151 <+225>:	mov    (%rax),%rdx
+   0x00007ffff7a7b154 <+228>:	lea    0x11cd75(%rip),%rax        # 0x7ffff7b97ed0
+
+292	in malloc.c
+   0x00007ffff7a7b15b <+235>:	cmpb   $0x0,(%rdx)
+   0x00007ffff7a7b15e <+238>:	cmovne %rax,%rcx
+   0x00007ffff7a7b162 <+242>:	sub    $0x8,%rsp
+   0x00007ffff7a7b166 <+246>:	push   %rbx
+   0x00007ffff7a7b167 <+247>:	push   %rax
+   0x00007ffff7a7b168 <+248>:	lea    0x121ec9(%rip),%rax        # 0x7ffff7b9d038 <__PRETTY_FUNCTION__.12163>
+   0x00007ffff7a7b16f <+255>:	push   %rax
+   0x00007ffff7a7b170 <+256>:	lea    0x11db81(%rip),%r8        # 0x7ffff7b98cf8
+   0x00007ffff7a7b177 <+263>:	lea    0x1215da(%rip),%rsi        # 0x7ffff7b9c758
+   0x00007ffff7a7b17e <+270>:	xor    %edi,%edi
+   0x00007ffff7a7b180 <+272>:	xor    %eax,%eax
+   0x00007ffff7a7b182 <+274>:	callq  0x7ffff7a61dd0 <__fxprintf>
+
+294	in malloc.c
+295	in malloc.c
+296	in malloc.c
+297	in malloc.c
+   0x00007ffff7a7b187 <+279>:	mov    0x353c22(%rip),%rax        # 0x7ffff7dcedb0
+   0x00007ffff7a7b18e <+286>:	add    $0x20,%rsp
+   0x00007ffff7a7b192 <+290>:	mov    (%rax),%rdi
+   0x00007ffff7a7b195 <+293>:	callq  0x7ffff7a627e0 <__GI__IO_fflush>
+
+298	in malloc.c
+   0x00007ffff7a7b19a <+298>:	callq  0x7ffff7a246c0 <__GI_abort>
+   0x00007ffff7a7b19f <+303>:	nop
+
+3036	in malloc.c
+3037	in malloc.c
+3038	in malloc.c
+3039	in malloc.c
+   0x00007ffff7a7b1a0 <+304>:	and    $0xfffffffffffffff0,%rax
+   0x00007ffff7a7b1a4 <+308>:	cmp    $0xffffffffffffffbf,%rax
+   0x00007ffff7a7b1a8 <+312>:	seta   %dl
+   0x00007ffff7a7b1ab <+315>:	jmpq   0x7ffff7a7b09e <__GI___libc_malloc+46>
+
+2983	in malloc.c
+   0x00007ffff7a7b1b0 <+320>:	mov    0x353bc9(%rip),%rdx        # 0x7ffff7dced80
+   0x00007ffff7a7b1b7 <+327>:	cmpb   $0x0,%fs:(%rdx)
+   0x00007ffff7a7b1bb <+331>:	jne    0x7ffff7a7b0dc <__GI___libc_malloc+108>
+   0x00007ffff7a7b1c1 <+337>:	mov    %rax,0x8(%rsp)
+   0x00007ffff7a7b1c6 <+342>:	callq  0x7ffff7a7a460 <tcache_init>
+
+3043	in malloc.c
+3044	in malloc.c
+3045	in malloc.c
+   0x00007ffff7a7b1cb <+347>:	mov    0x8(%rsp),%rax
+   0x00007ffff7a7b1d0 <+352>:	cmp    %rax,0x3540f9(%rip)        # 0x7ffff7dcf2d0 <mp_+80>
+   0x00007ffff7a7b1d7 <+359>:	jbe    0x7ffff7a7b0dc <__GI___libc_malloc+108>
+
+3046	in malloc.c
+3047	in malloc.c
+   0x00007ffff7a7b1dd <+365>:	mov    %fs:0x0(%rbp),%rcx
+   0x00007ffff7a7b1e2 <+370>:	test   %rcx,%rcx
+   0x00007ffff7a7b1e5 <+373>:	je     0x7ffff7a7b0dc <__GI___libc_malloc+108>
+   0x00007ffff7a7b1eb <+379>:	nopl   0x0(%rax,%rax,1)
+   0x00007ffff7a7b1f0 <+384>:	lea    (%rcx,%rax,8),%rsi
+
+3048	in malloc.c
+   0x00007ffff7a7b1f4 <+388>:	mov    0x40(%rsi),%rdx
+   0x00007ffff7a7b1f8 <+392>:	test   %rdx,%rdx
+   0x00007ffff7a7b1fb <+395>:	je     0x7ffff7a7b0dc <__GI___libc_malloc+108>
+
+2941	in malloc.c
+   0x00007ffff7a7b201 <+401>:	cmp    $0x3f,%rax
+Quit
+0x00007ffff7a7b07d	3033	in malloc.c
+Run till exit from #0  0x00007ffff7a7b07d in __GI___libc_malloc (bytes=3)
+    at malloc.c:3033
+0x000055555555469c in funkcija () at sigseg09.c:32
+32	    c = malloc(3);
+Value returned is $1 = (void *) 0x555555756260
+34	    for(i=0; i<3;i++)
+0x00005555555546a7	34	    for(i=0; i<3;i++)
+1: /a $rbp = 0x7fffffffde20
+2: /a $rsp = 0x7fffffffde10
+3: /a $rax = 0x555555756260
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+c = 0x555555756260 ""
+i = 0
+0x00005555555546bd	34	    for(i=0; i<3;i++)
+1: /a $rbp = 0x7fffffffde20
+2: /a $rsp = 0x7fffffffde10
+3: /a $rax = 0x555555756260
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+0x00005555555546c1	34	    for(i=0; i<3;i++)
+1: /a $rbp = 0x7fffffffde20
+2: /a $rsp = 0x7fffffffde10
+3: /a $rax = 0x555555756260
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+35	        c[i] = 'a';
+1: /a $rbp = 0x7fffffffde20
+2: /a $rsp = 0x7fffffffde10
+3: /a $rax = 0x555555756260
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+0x00005555555546ac	35	        c[i] = 'a';
+1: /a $rbp = 0x7fffffffde20
+2: /a $rsp = 0x7fffffffde10
+3: /a $rax = 0x0
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+0x00005555555546af	35	        c[i] = 'a';
+1: /a $rbp = 0x7fffffffde20
+2: /a $rsp = 0x7fffffffde10
+3: /a $rax = 0x0
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+0x00005555555546b3	35	        c[i] = 'a';
+1: /a $rbp = 0x7fffffffde20
+2: /a $rsp = 0x7fffffffde10
+3: /a $rax = 0x555555756260
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+0x00005555555546b6	35	        c[i] = 'a';
+1: /a $rbp = 0x7fffffffde20
+2: /a $rsp = 0x7fffffffde10
+3: /a $rax = 0x555555756260
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+34	    for(i=0; i<3;i++)
+1: /a $rbp = 0x7fffffffde20
+2: /a $rsp = 0x7fffffffde10
+3: /a $rax = 0x555555756260
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+0x00005555555546bd	34	    for(i=0; i<3;i++)
+1: /a $rbp = 0x7fffffffde20
+2: /a $rsp = 0x7fffffffde10
+3: /a $rax = 0x555555756260
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+Dump of assembler code for function funkcija:
+sigseg09.c:
+30	{
+   0x000055555555468a <+0>:	push   %rbp
+   0x000055555555468b <+1>:	mov    %rsp,%rbp
+   0x000055555555468e <+4>:	sub    $0x10,%rsp
+
+31	    char * c;
+32	    c = malloc(3);
+   0x0000555555554692 <+8>:	mov    $0x3,%edi
+   0x0000555555554697 <+13>:	callq  0x555555554560 <malloc@plt>
+   0x000055555555469c <+18>:	mov    %rax,-0x8(%rbp)
+
+33	    int i;
+34	    for(i=0; i<3;i++)
+   0x00005555555546a0 <+22>:	movl   $0x0,-0xc(%rbp)
+   0x00005555555546a7 <+29>:	jmp    0x5555555546bd <funkcija+51>
+
+35	        c[i] = 'a';
+   0x00005555555546a9 <+31>:	mov    -0xc(%rbp),%eax
+   0x00005555555546ac <+34>:	movslq %eax,%rdx
+   0x00005555555546af <+37>:	mov    -0x8(%rbp),%rax
+   0x00005555555546b3 <+41>:	add    %rdx,%rax
+Quit
+1: /a $rbp = 0x7fffffffde20
+2: /a $rsp = 0x7fffffffde10
+3: /a $rax = 0x555555756260
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+c = 0x555555756260 "a"
+i = 1
+0x00005555555546ac	35	        c[i] = 'a';
+1: /a $rbp = 0x7fffffffde20
+2: /a $rsp = 0x7fffffffde10
+3: /a $rax = 0x1
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+c = 0x555555756260 "a"
+i = 1
+0x00005555555546b3	35	        c[i] = 'a';
+1: /a $rbp = 0x7fffffffde20
+2: /a $rsp = 0x7fffffffde10
+3: /a $rax = 0x555555756260
+4: /a $rdi = 0x555555756270
+5: /a $rsi = 0x0
+c = 0x555555756260 "aa"
+i = 2
+0x0000555555554550 in printf@plt ()
+1: /a $rbp = 0x7fffffffde20
+2: /a $rsp = 0x7fffffffde08
+3: /a $rax = 0x0
+4: /a $rdi = 0x555555554784
+5: /a $rsi = 0x555555756260
+No symbol table info available.
+#0  0x0000555555554550 in printf@plt ()
+Run till exit from #0  0x0000555555554550 in printf@plt ()
+funkcija () at sigseg09.c:38
+38	}
+1: /a $rbp = 0x7fffffffde20
+2: /a $rsp = 0x7fffffffde10
+3: /a $rax = 0x7
+4: /a $rdi = 0x1
+5: /a $rsi = 0x555555756280
+Run till exit from #0  funkcija () at sigseg09.c:38
+main (argc=1, argv=0x7fffffffdf28) at sigseg09.c:43
+43		return 0;
+1: /a $rbp = 0x7fffffffde40
+2: /a $rsp = 0x7fffffffde30
+3: /a $rax = 0x7
+4: /a $rdi = 0x1
+5: /a $rsi = 0x555555756280
+"finish" not meaningful in the outermost frame.
+"finish" not meaningful in the outermost frame.
+# vidimo da ce ispisati aaa tj tri karaktera za koliko smo prvobitno i zauzeli memorije 
+ 
