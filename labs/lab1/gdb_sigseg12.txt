@@ -1,0 +1,122 @@
+ Pokretanjem programa dobijamo navedenu gresku....
+
+main.c2912 warning format '%d' expects argument of type 'int ',but argument 2 has type 'int' [-Wformat=]
+
+ postavljamo breakpoint na datu liniju koda (ja sam postavio na sve linije koda) komanda (gdb) b broj linije
+
+Reading symbols from a.out...done.
+usrsharegdbgdbinit No such file or directory.
+(gdb) info b
+Num	Type		Disp End Address		What
+1	breakpoint	keep y   0x000000000040058e	in main at main.c31
+2	breakpoint	keep y   0x0000000000400589	in main at main.c30
+3	breakpoint	keep y   0x0000000000400575	in main at main.c29
+4	breakpoint	keep y   0x000000000040056e	in main at main.c28
+5	breakpoint	keep y   0x000000000040056e	in main at main.c27
+6	breakpoint	keep y   0x000000000040056e	in main at main.c26
+7	breakpoint	keep y   0x000000000040056e	in main at main.c24
+
+(gdb) list
+23
+24	#include stdio.h
+25
+26	int main()
+27	{
+28	   int n = 2;
+29	   scanf(%d,n);
+30	   return 0;
+31	}
+
+ pokrecemo GDB
+
+(gdb) r
+Starting program homea.out
+
+ krecemo se do problematicne linije koda pomocu komande next (n) ili continue (c)
+
+Breakpoint 4, main () at main.c28
+28	   int n=2;
+(gdb) n
+
+Breakpoint 3, main () at main.c29
+29	   scanf(%d,n);
+(gdb) n
+1
+
+ nakon prolaska kroz scanf liniju koda i unosenja proizvoljne brojne vrijednosti  
+ dobijamo sledeci error ....
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7a68682 in _IO_vfscanf_internal (s=optimized out,
+    format=optimized out, argprt=argprt@entry=0x7fffffffeaf8,
+    errp=errp@entry=0x0) at vfscanf.c1857
+1857    vfscanf.c No such file or directory.
+
+ interapt SIGSEGV- illegal storage access
+ ispisujemo stack trace (redoslijed funkcija koje su se pozvale pre nego sto je program 
+ stao) kako bi smo mogli vidjeti da li neka funkcija koci dalje izvrsavanje programa i eventualno koja je to funkcija 
+
+(gdb) where
+#0  0x00007ffff7a68682 in _IO_vfscanf_internal (s=optimized out,
+    format=optimized out, argprt=argprt@entry=0x7fffffffeaf8,
+    errp=errp@entry=0x0) at vfscanf.c1857
+#1  0x00007ffff7a6ee19 in __isoc99_scanf (format=optimized out)
+    at isoc99_scanf.c37
+#2  0x0000000000400589 in main () at main.c29
+
+#LOCAL VARIABLES
+map	optimized out
+argpos	optimized out
+_buffer	{__routine = 0x7ffff7a6ecc0 __funlockfile, __arg = 0x7ffff7dd4640 _IO_2_1_stdin_, __canceltype = -140414528, __prev = 0x3abf8d2}
+_avail	optimized out
+arg	{{gp_offset = 16, fp_offset = 48, overflow_arg_area = 0x7fffffffebe0, reg_save_area = 0x7fffffffeb10}}
+f	0x400616 
+fc	optimized out
+done	optimized out
+read_in	optimized out
+c	optimized out
+width	10
+flags	64
+errval	0
+loc	optimized out
+curctype	optimized out
+inchar_errno	optimized out
+got_digit	optimized out
+got_dot	optimized out
+got_e	optimized out
+negative	optimized out
+not_in	optimized out
+base	optimized out
+decimal	optimized out
+thousands	optimized out
+ptrs_to_free	0x0
+state	{__count = 0, __value = {__wch = 0, __wchb = 000000000}}
+num	{q = 1, uq = 1, l = 1, ul = 1}
+str	0x0
+wstr	0x0
+strptr	0x0
+strsize	0
+skip_space	0
+tw	0x7fffffffe6f1 
+wp	optimized out
+wpmax	256
+wpsize	optimized out
+use_malloc	false 
+__PRETTY_FUNCTION__	_IO_vfscanf_internal
+
+#CALL STACK
+#	Function		FileLine
+0	_IO_vfscanf_internal	vfscanf.c1857
+1	__isoc99_scanf		isoc99_scanf.c37
+2	main			main.c29	
+
+ na osnovu dobijenih informacija zakljucujemo da je problem nastao pri citanju argumenata
+ provjerom dokumentacije funkcije scanf (i funkcije _IO_vscanf_internal ) zakljucijemo da prosledjeni argument treba da bude pokazivackog tipa 
+ scanf(%d,n); -- scanf(%d,&n);
+
+ ispravimo pretpostavljenu gresku ponovo pokrenemo program
+
+1
+
+...Program finished with exit code 0
+Press ENTER to exit console.
