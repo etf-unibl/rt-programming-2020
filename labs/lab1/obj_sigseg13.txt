@@ -1,0 +1,6 @@
+potencijalna opasnost: ne bi smjeli koristiti null pokazivac dok on ne pokaze na neku adresu u memoriji.
+
+
+uklodnjen warning kojeg je prouzrokovalo prosljedjivanje null pokazivaca printf-u,
+umjesto %d stavljeno %ls koji oznacava wide character string za kodovane rijeci koje kompajler koristi.
+
