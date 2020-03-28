@@ -1,0 +1,224 @@
+# break before function add
+Breakpoint 1 at 0x6fb: file sigseg14.c, line 40.
+# breakpoint on add_numbers function
+Breakpoint 2 at 0x6b4: file sigseg14.c, line 27.
+# because of compile warning put the breakpoint on scanf function
+Breakpoint 3 at 0x6e5: file sigseg14.c, line 38.
+
+
+# display esp and ebp
+1: /a $sp = <error: No registers.>
+2: /a $bp = <error: No registers.>
+
+
+# let's run program
+Starting program: /home/pedja1/Desktop/Lab1/sigseg14 
+
+Breakpoint 3, main () at sigseg14.c:38
+38	     scanf("%d",n2); 
+1: /a $sp = 0x7fffffffdef0
+2: /a $bp = 0xffffffffffffdf00
+# 
+ check the asembler
+Dump of assembler code for function main:
+   0x00005555555546c4 <+0>:	push   %rbp
+   0x00005555555546c5 <+1>:	mov    %rsp,%rbp
+   0x00005555555546c8 <+4>:	sub    $0x10,%rsp
+   0x00005555555546cc <+8>:	lea    0xf1(%rip),%rax        # 0x5555555547c4
+   0x00005555555546d3 <+15>:	mov    %rax,-0x8(%rbp)
+   0x00005555555546d7 <+19>:	movl   $0x1,-0x10(%rbp)
+   0x00005555555546de <+26>:	movl   $0x2,-0xc(%rbp)
+=> 0x00005555555546e5 <+33>:	mov    -0xc(%rbp),%eax
+   0x00005555555546e8 <+36>:	mov    %eax,%esi
+   0x00005555555546ea <+38>:	lea    0xe9(%rip),%rdi        # 0x5555555547da
+   0x00005555555546f1 <+45>:	mov    $0x0,%eax
+   0x00005555555546f6 <+50>:	callq  0x555555554580 <__isoc99_scanf@plt>
+   0x00005555555546fb <+55>:	mov    -0xc(%rbp),%edx
+   0x00005555555546fe <+58>:	mov    -0x10(%rbp),%eax
+   0x0000555555554701 <+61>:	mov    %edx,%esi
+   0x0000555555554703 <+63>:	mov    %eax,%edi
+   0x0000555555554705 <+65>:	callq  0x5555555546aa <add_numbers>
+   0x000055555555470a <+70>:	mov    %eax,0x200904(%rip)        # 0x555555755014 <suma>
+   0x0000555555554710 <+76>:	mov    0x2008fe(%rip),%edx        # 0x555555755014 <suma>
+   0x0000555555554716 <+82>:	mov    -0x8(%rbp),%rax
+   0x000055555555471a <+86>:	mov    %rax,%rsi
+   0x000055555555471d <+89>:	lea    0xb9(%rip),%rdi        # 0x5555555547dd
+   0x0000555555554724 <+96>:	mov    $0x0,%eax
+   0x0000555555554729 <+101>:	callq  0x555555554570 <printf@plt>
+   0x000055555555472e <+106>:	mov    $0x0,%eax
+   0x0000555555554733 <+111>:	leaveq 
+   0x0000555555554734 <+112>:	retq   
+End of assembler dump.
+
+
+# let's dig a little deeper in scanf
+__isoc99_scanf (format=0x5555555547da "%d") at isoc99_scanf.c:27
+27	isoc99_scanf.c: No such file or directory.
+1: /a $sp = 0x7fffffffdee8
+2: /a $bp = 0xffffffffffffdf00
+# backtrace
+
+#0  __isoc99_scanf (format=0x5555555547da "%d") at isoc99_scanf.c:27
+#1  0x00005555555546fb in main () at sigseg14.c:38
+
+
+# next step
+32	in isoc99_scanf.c
+1: /a $sp = 0x7fffffffde10
+2: /a $bp = 0xffffffffffffdf00
+
+
+# step
+36	in isoc99_scanf.c
+1: /a $sp = 0x7fffffffde10
+2: /a $bp = 0xffffffffffffdf00
+
+#0  __isoc99_scanf (format=0x5555555547da "%d") at isoc99_scanf.c:36
+#1  0x00005555555546fb in main () at sigseg14.c:38
+
+
+# OK let's do 10 steps and show backtrace
+
+_IO_vfscanf_internal (s=0x7ffff7dcfa00 <_IO_2_1_stdin_>, 
+    format=0x5555555547da "%d", argptr=argptr@entry=0x7fffffffde10, 
+    errp=errp@entry=0x0) at vfscanf.c:292
+292	vfscanf.c: No such file or directory.
+1: /a $sp = 0x7fffffffd720
+2: /a $bp = 0xffffffffffffde00
+#0  _IO_vfscanf_internal (s=0x7ffff7dcfa00 <_IO_2_1_stdin_>, 
+    format=0x5555555547da "%d", argptr=argptr@entry=0x7fffffffde10, 
+    errp=errp@entry=0x0) at vfscanf.c:292
+#1  0x00007ffff7a5ffd8 in __isoc99_scanf (format=<optimized out>)
+    at isoc99_scanf.c:37
+#2  0x00005555555546fb in main () at sigseg14.c:38
+
+# and so on 
+
+# back to main 
+# check the stack
+0x7fffffffd720:	0x0040000a	0x00480049	0x00000006	0x00000004
+0x7fffffffd730:	0x00000040	0x00000000	0x00000040	0x00000000
+0x7fffffffd740:	0x00000040	0x00000000	0x00000230	0x00000000
+0x7fffffffd750:	0x00000230	0x00000000	0x00000008	0x00000000
+
+
+# backtrace
+#0  _IO_vfscanf_internal (s=0x7ffff7dcfa00 <_IO_2_1_stdin_>, 
+    format=0x5555555547da "%d", argptr=argptr@entry=0x7fffffffde10, 
+    errp=errp@entry=0x0) at vfscanf.c:292
+#1  0x00007ffff7a5ffd8 in __isoc99_scanf (format=<optimized out>)
+    at isoc99_scanf.c:37
+#2  0x00005555555546fb in main () at sigseg14.c:38
+Continuing.
+
+Breakpoint 1, main () at sigseg14.c:40
+40	     suma=add_numbers(n1,n2);
+1: /a $sp = 0x7fffffffdef0
+2: /a $bp = 0xffffffffffffdf00
+
+# where we land (with source) 
+Dump of assembler code for function main:
+sigseg14.c:
+34	{
+   0x00005555555546c4 <+0>:	push   %rbp
+   0x00005555555546c5 <+1>:	mov    %rsp,%rbp
+   0x00005555555546c8 <+4>:	sub    $0x10,%rsp
+
+35		 char *poruka = "Suma brojeva 1 i 2 je";
+   0x00005555555546cc <+8>:	lea    0xf1(%rip),%rax        # 0x5555555547c4
+   0x00005555555546d3 <+15>:	mov    %rax,-0x8(%rbp)
+
+36	     int n1=1;
+   0x00005555555546d7 <+19>:	movl   $0x1,-0x10(%rbp)
+
+37	     int n2=2;
+   0x00005555555546de <+26>:	movl   $0x2,-0xc(%rbp)
+
+38	     scanf("%d",n2); 
+   0x00005555555546e5 <+33>:	mov    -0xc(%rbp),%eax
+   0x00005555555546e8 <+36>:	mov    %eax,%esi
+   0x00005555555546ea <+38>:	lea    0xe9(%rip),%rdi        # 0x5555555547da
+   0x00005555555546f1 <+45>:	mov    $0x0,%eax
+   0x00005555555546f6 <+50>:	callq  0x555555554580 <__isoc99_scanf@plt>
+
+39	     
+40	     suma=add_numbers(n1,n2);
+=> 0x00005555555546fb <+55>:	mov    -0xc(%rbp),%edx
+   0x00005555555546fe <+58>:	mov    -0x10(%rbp),%eax
+   0x0000555555554701 <+61>:	mov    %edx,%esi
+   0x0000555555554703 <+63>:	mov    %eax,%edi
+   0x0000555555554705 <+65>:	callq  0x5555555546aa <add_numbers>
+   0x000055555555470a <+70>:	mov    %eax,0x200904(%rip)        # 0x555555755014 <suma>
+
+41	     printf("%s %d\n", poruka, suma);
+   0x0000555555554710 <+76>:	mov    0x2008fe(%rip),%edx        # 0x555555755014 <suma>
+   0x0000555555554716 <+82>:	mov    -0x8(%rbp),%rax
+   0x000055555555471a <+86>:	mov    %rax,%rsi
+   0x000055555555471d <+89>:	lea    0xb9(%rip),%rdi        # 0x5555555547dd
+   0x0000555555554724 <+96>:	mov    $0x0,%eax
+   0x0000555555554729 <+101>:	callq  0x555555554570 <printf@plt>
+
+42	
+43	     return 0;
+   0x000055555555472e <+106>:	mov    $0x0,%eax
+
+44	}   0x0000555555554733 <+111>:	leaveq 
+   0x0000555555554734 <+112>:	retq   
+End of assembler dump.
+
+
+# check the variables
+Symbol "poruka" is a complex DWARF expression:
+     0: DW_OP_fbreg -24
+.
+Symbol "suma" is static storage at address 0x555555755014.
+Symbol "n1" is a complex DWARF expression:
+     0: DW_OP_fbreg -32
+.
+Symbol "n2" is a complex DWARF expression:
+     0: DW_OP_fbreg -28
+.
+# go to the last breakpoint 
+Continuing.
+
+Breakpoint 2, add_numbers (n1=1, n2=2) at sigseg14.c:27
+27	     int sum=n1+n2;
+1: /a $sp = 0x7fffffffdee0
+2: /a $bp = 0xffffffffffffdee0
+# where we now land
+
+Dump of assembler code for function add_numbers:
+sigseg14.c:
+26	{
+   0x00005555555546aa <+0>:	push   %rbp
+   0x00005555555546ab <+1>:	mov    %rsp,%rbp
+   0x00005555555546ae <+4>:	mov    %edi,-0x14(%rbp)
+   0x00005555555546b1 <+7>:	mov    %esi,-0x18(%rbp)
+
+27	     int sum=n1+n2;
+=> 0x00005555555546b4 <+10>:	mov    -0x14(%rbp),%edx
+   0x00005555555546b7 <+13>:	mov    -0x18(%rbp),%eax
+   0x00005555555546ba <+16>:	add    %edx,%eax
+   0x00005555555546bc <+18>:	mov    %eax,-0x4(%rbp)
+
+28	     return sum;
+   0x00005555555546bf <+21>:	mov    -0x4(%rbp),%eax
+
+29	}
+   0x00005555555546c2 <+24>:	pop    %rbp
+   0x00005555555546c3 <+25>:	retq   
+End of assembler dump.
+
+
+# stack
+0x7fffffffdee0:	0xffffdf00	0x00007fff	0x5555470a	0x00005555
+0x7fffffffdef0:	0x00000001	0x00000002	0x555547c4	0x00005555
+0x7fffffffdf00:	0x55554740	0x00005555	0xf7a05b97	0x00007fff
+0x7fffffffdf10:	0x00000001	0x00000000	0xffffdfe8	0x00007fff
+# backtrace
+#0  add_numbers (n1=1, n2=2) at sigseg14.c:27
+#1  0x000055555555470a in main () at sigseg14.c:40
+# continue 
+
+Continuing.
+[Inferior 1 (process 5414) exited normally]

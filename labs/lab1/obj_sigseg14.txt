@@ -1,0 +1,15 @@
+Prilikom kompajliranj programa pojavi se upozorenje s porukom
+sigseg14.c: In function ‘main’:
+sigseg14.c:38:14: warning: format ‘%d’ expects argument of type ‘int *’, but argument 2 has type ‘int’ [-Wformat=]
+      scanf("%d",n2); 
+             ~^
+
+Prirodno, ako bi se ispravilo upozorenje, ne bi ni bilo potrebe ulaziti u debag (osim ako zelimo prikazati stanje registara, adrese promjenljivih, asemblerski kod uz neke prekidne tacke i slicno). 
+Pa ako bih mijenjao kod najjednostavnije rjesenje bilo bi da izbrisemo liniju 38 i nemamo tog scanf-a (svejedno na kraju ispisujemo poruku sabiranja 1 i 2). Ali ako vec imamo scanf i korisnicki unos za promjenljivu n2 onda joj priloagdimo argument int* poslavsi joj kao parametar adresu n2 (tj. &n2). Onda ne bi bilo lose na kraju promjeniti i printf koji ce ispisati sabiranje n1 i unijetog n2.
+
+Zanimljivo je jos bilo primjetiti pri pokretanju programa iz linuksa i prosledjivanjem nekog integer paramatra izvrsnom fajlu, dobio bih poruku "Segmentation fault (core dumped)". Ako programu ne prosledim nikakav argument ili neki ne integer onda se program regularno zavrsi i ispise ispravnu poruku.
+
+
+Sad ipak zanemarimo sva gore razmatranja i udjumo u gdb. Postavio sam tri breakpoint-a. Jedan od njih je na funkciji scanf (mozda i suvisan) s namjerom da udjem u implementiranu funkciju iz .h biblioteke ne bi li kojim slucajem tu nesto vise otkrio o prosledjivanju neregularnog argumenta (unaprijed ocekivana vjerovatnoce uspjeha ove namjere bila je skoro 0 (bar za moje znanje)). Nakon vise pokusaja da se nesto otkrije, ipak se to nije desilo. U log fajlu su prikazano "dublje kopanje" scanf-a i backtrace pri tome. Nakon toga preslo se na sledeci breakpoint u main-u i u nekoliko sledecih iteracija prikazani su asemblerski kod, stanja steka kao i adrese promjenljivih. Na kraju je program uspjesno zavrsen (ocekivano jer smo pri kompajliranju imali samo upozorenje). 
+
+
