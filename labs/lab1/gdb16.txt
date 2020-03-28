@@ -1,0 +1,111 @@
+Starting program: /home/majasavic/Desktop/Lab01/sigseg 
+[Inferior 1 (process 4073) exited normally]
+# Adding breakpoint before function add
+Breakpoint 1 at 0x555555554683: file sigseg16.c, line 38.
+Starting program: /home/majasavic/Desktop/Lab01/sigseg 
+
+Breakpoint 1, main () at sigseg16.c:39
+39	     suma=add_numbers(n1,n2);
+#This specialized command dumps a range of memory as machine instructions
+Dump of assembler code for function main:
+sigseg16.c:
+34	{
+   0x0000555555554674 <+0>:	push   %rbp
+   0x0000555555554675 <+1>:	mov    %rsp,%rbp
+   0x0000555555554678 <+4>:	sub    $0x10,%rsp
+
+35		 static char *poruka = "Suma brojeva 1 i 2 je";
+36	     int n1=1;
+   0x000055555555467c <+8>:	movl   $0x1,-0x8(%rbp)
+
+37	     int n2;
+38	     
+39	     suma=add_numbers(n1,n2);
+=> 0x0000555555554683 <+15>:	mov    -0x4(%rbp),%edx
+   0x0000555555554686 <+18>:	mov    -0x8(%rbp),%eax
+   0x0000555555554689 <+21>:	mov    %edx,%esi
+   0x000055555555468b <+23>:	mov    %eax,%edi
+   0x000055555555468d <+25>:	callq  0x55555555465a <add_numbers>
+   0x0000555555554692 <+30>:	mov    %eax,0x200984(%rip)        # 0x55555575501c <suma>
+Quit
+# We can display certain expressions each time we run
+
+1: /a $sp = 0x7fffffffdd60
+2: /a $bp = 0xffffffffffffdd70
+
+
+# Display ouput 
+
+3: $eax = 1431651956
+Dump of assembler code for function main:
+   0x0000555555554674 <+0>:	push   %rbp
+   0x0000555555554675 <+1>:	mov    %rsp,%rbp
+   0x0000555555554678 <+4>:	sub    $0x10,%rsp
+   0x000055555555467c <+8>:	movl   $0x1,-0x8(%rbp)
+=> 0x0000555555554683 <+15>:	mov    -0x4(%rbp),%edx
+   0x0000555555554686 <+18>:	mov    -0x8(%rbp),%eax
+   0x0000555555554689 <+21>:	mov    %edx,%esi
+   0x000055555555468b <+23>:	mov    %eax,%edi
+   0x000055555555468d <+25>:	callq  0x55555555465a <add_numbers>
+   0x0000555555554692 <+30>:	mov    %eax,0x200984(%rip)        # 0x55555575501c <suma>
+   0x0000555555554698 <+36>:	mov    0x20097e(%rip),%edx        # 0x55555575501c <suma>
+   0x000055555555469e <+42>:	mov    0x20096b(%rip),%rax        # 0x555555755010 <poruka.2255>
+   0x00005555555546a5 <+49>:	mov    %rax,%rsi
+   0x00005555555546a8 <+52>:	lea    0x95(%rip),%rdi        # 0x555555554744
+   0x00005555555546af <+59>:	mov    $0x0,%eax
+   0x00005555555546b4 <+64>:	callq  0x555555554530 <printf@plt>
+Quit
+# We can see all registers
+
+rax            0x555555554674	93824992233076
+rbx            0x0	0
+rcx            0x5555555546c0	93824992233152
+rdx            0x7fffffffde68	140737488346728
+rsi            0x7fffffffde58	140737488346712
+rdi            0x1	1
+rbp            0x7fffffffdd70	0x7fffffffdd70
+rsp            0x7fffffffdd60	0x7fffffffdd60
+r8             0x7ffff7dd0d80	140737351847296
+r9             0x7ffff7dd0d80	140737351847296
+r10            0x0	0
+r11            0x0	0
+r12            0x555555554550	93824992232784
+r13            0x7fffffffde50	140737488346704
+r14            0x0	0
+r15            0x0	0
+rip            0x555555554683	0x555555554683 <main+15>
+eflags         0x206	[ PF IF ]
+cs             0x33	51
+ss             0x2b	43
+ds             0x0	0
+Quit
+#stack
+
+0x7fffffffdd60:	0xffffde50	0x00007fff	0x00000001	0x00000000
+0x7fffffffdd70:	0x555546c0	0x00005555	0xf7a05b97	0x00007fff
+0x7fffffffdd80:	0x00000001	0x00000000	0xffffde58	0x00007fff
+0x7fffffffdd90:	0x00008000	0x00000001	0x55554674	0x00005555
+
+
+Starting program: /home/majasavic/Desktop/Lab01/sigseg 
+
+Breakpoint 1, main () at sigseg16.c:39
+39	     suma=add_numbers(n1,n2);
+1: /a $sp = 0x7fffffffdd60
+2: /a $bp = 0xffffffffffffdd70
+3: $eax = 1431651956
+#0  main () at sigseg16.c:39
+#0  main () at sigseg16.c:39
+39	     suma=add_numbers(n1,n2);
+Stack level 0, frame at 0x7fffffffdd80:
+ rip = 0x555555554683 in main (sigseg16.c:39); 
+    saved rip = 0x7ffff7a05b97
+ source language c.
+ Arglist at 0x7fffffffdd70, args: 
+ Locals at 0x7fffffffdd70, Previous frame's sp is 0x7fffffffdd80
+ Saved registers:
+  rbp at 0x7fffffffdd70, rip at 0x7fffffffdd78
+Symbol "suma" is static storage at address 0x55555575501c.
+Symbol "poruka" is static storage at address 0x555555755010.
+
+

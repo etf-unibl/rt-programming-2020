@@ -1,0 +1,16 @@
+Dati c file nema gresku, te se uspjesno izvrsava.
+Koristene naredbe su :
+
+set logging file gdb-output.txt
+set logging overwrite on
+set logging on
+
+echo
+break
+display
+disas
+run
+info
+quit
+x
+
