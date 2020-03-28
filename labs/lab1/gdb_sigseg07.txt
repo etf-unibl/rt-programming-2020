@@ -1,0 +1,109 @@
+24	
+25	#include <stdio.h>
+26	#include <stdlib.h>
+27	#include <string.h>
+28	
+29	void funkcija(char ** argumenti)
+30	{
+31	    char niz[2];
+32	    strcpy(niz, argumenti[1]);
+33	    return;
+34	}
+35	
+36	int main(int argc, char **argv)
+37	{
+38		funkcija(argv);
+39		return 0;
+40	}
+41	
+Posmatracemo kod u asembleru za funkciju funkcija i stanje na steku prije i poslije poziva funkcije strcpy.
+Drugi argument komandne linije prilikom debagovanja ce biti rijec vjezba. U slucaju da se programu nista dodatno ne proslijedi doci ce do greske jer ce funkcija strcpy pokusati da dereferencira null pokazivac.
+Breakpoint 1 at 0x6c5: file sigseg07.c, line 32.
+Breakpoint 2 at 0x6df: file sigseg07.c, line 33.
+Starting program: /home/soko/Desktop/PURV/lab1/sigseg07 vjezba
+
+Breakpoint 1, funkcija (argumenti=0x7fffffffdd88) at sigseg07.c:32
+32	    strcpy(niz, argumenti[1]);
+Prvo pogledajmo kod.
+
+
+Dump of assembler code for function funkcija:
+sigseg07.c:
+30	{
+   0x00005555555546aa <+0>:	push   %rbp
+   0x00005555555546ab <+1>:	mov    %rsp,%rbp
+   0x00005555555546ae <+4>:	sub    $0x20,%rsp
+   0x00005555555546b2 <+8>:	mov    %rdi,-0x18(%rbp)
+   0x00005555555546b6 <+12>:	mov    %fs:0x28,%rax
+   0x00005555555546bf <+21>:	mov    %rax,-0x8(%rbp)
+   0x00005555555546c3 <+25>:	xor    %eax,%eax
+
+31	    char niz[2];
+32	    strcpy(niz, argumenti[1]);
+=> 0x00005555555546c5 <+27>:	mov    -0x18(%rbp),%rax
+   0x00005555555546c9 <+31>:	add    $0x8,%rax
+   0x00005555555546cd <+35>:	mov    (%rax),%rdx
+   0x00005555555546d0 <+38>:	lea    -0xa(%rbp),%rax
+   0x00005555555546d4 <+42>:	mov    %rdx,%rsi
+   0x00005555555546d7 <+45>:	mov    %rax,%rdi
+   0x00005555555546da <+48>:	callq  0x555555554570 <strcpy@plt>
+
+33	    return;
+   0x00005555555546df <+53>:	nop
+
+34	}
+   0x00005555555546e0 <+54>:	mov    -0x8(%rbp),%rax
+   0x00005555555546e4 <+58>:	xor    %fs:0x28,%rax
+   0x00005555555546ed <+67>:	je     0x5555555546f4 <funkcija+74>
+   0x00005555555546ef <+69>:	callq  0x555555554580 <__stack_chk_fail@plt>
+   0x00005555555546f4 <+74>:	leaveq 
+   0x00005555555546f5 <+75>:	retq   
+End of assembler dump.
+Posmatrajmo 5. i 6. asemblersku instrukciju za liniju 30.
+Ove instrukcije se desavaju nakon formiranja stek okvira i postavljanja argumenata funkcije na stek i predstavljaju upis kanarinac vrijednosti pred kraj stek okvira.
+Ako zelimo da potvrdimo da je to zaista kanarinac dovoljno je da pogledamo asemblerski kod za liniju 34, tj. kraj funkcije.
+Vidimo da se sa lokacije -0x8(%rbp) cita 8 bajtova i da se porede sa onima na lokaciji %fs:0x28, odakle su i prvobitni kopirani.
+U slucaju da su isti xor ce u rax postaviti nulu, te ce flag za nulu biti setovan i desice se grananje te ce se program nastaviti izvrsavati bez daljih problema. Ako postoje razlike rezultat ce biti razlicit od nule, grananje se nece desiti i bice pozvana funkcija __stack_chk_fail@plt.
+Izvrsavanje programa ce biti prekinuto.
+
+
+
+Vrijednosti rsp i rbp registara.
+rsp            0x7fffffffdc60	0x7fffffffdc60
+rbp            0x7fffffffdc80	0x7fffffffdc80
+Prije posmatranja steka, na osnovu koda i vrijednosti rsp i rbp odredicemo gdje se na stek okviru ove funkcije nalaze svi podaci.
+Za stek okvir ove funkcije alocirana su 32 bajta(0x20, 3. asemblerska instrukcija, linija 30). Znaci dovoljno je prikazati 32 bajta od adrese koju sadrzi rsp i vidjecemo sve podatke. Posljednjih 8 bajtova su kanarinac vrijednost(-0x8(%rbp)). Na lokaciji -0x18(%rbp) se nalazi proslijedjeni argument, a pocetak niza je na lokaciji -0xa(%rbp), sto mozemo da vidimo iz instrukcija za liniju 32. Prvi argument se stavlja u rdi registar i to je ova adresa.
+
+
+
+0x7fffffffdc60:	0x01	0x00	0x00	0x00	0x00	0x00	0x00	0x00
+0x7fffffffdc68:	0x88	0xdd	0xff	0xff	0xff	0x7f	0x00	0x00
+0x7fffffffdc70:	0xa0	0x59	0xde	0xf7	0xff	0x7f	0x00	0x00
+0x7fffffffdc78:	0x00	0x70	0x6f	0x66	0x60	0xb3	0x65	0xb2
+Nas niz u stvari predstavljaju dva posljednja bajta u 3 vrsti. Funkcija strcpy ce upisati rijec vjezba na stek i prepisace posljednjih 8 bajtova.
+
+
+Continuing.
+
+Breakpoint 2, funkcija (argumenti=0x7fffffffdd88) at sigseg07.c:33
+33	    return;
+0x7fffffffdc60:	0x01	0x00	0x00	0x00	0x00	0x00	0x00	0x00
+0x7fffffffdc68:	0x88	0xdd	0xff	0xff	0xff	0x7f	0x00	0x00
+0x7fffffffdc70:	0xa0	0x59	0xde	0xf7	0xff	0x7f	0x76	0x6a
+0x7fffffffdc78:	0x65	0x7a	0x62	0x61	0x00	0xb3	0x65	0xb2
+Pet bajtova je prepisano i ovo ce dovesti do prekida izvrsavanja programa.
+
+Continuing.
+
+Program received signal SIGABRT, Aborted.
+__GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:51
+51	../sysdeps/unix/sysv/linux/raise.c: No such file or directory.
+Continuing.
+
+Program terminated with signal SIGABRT, Aborted.
+The program no longer exists.
+
+
+stack smashing error
+
+Program bi radio u slucaju da je argument komandne linije manje duzine, npr. 1 karakter i terminator.
