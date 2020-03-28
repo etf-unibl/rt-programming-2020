@@ -1,0 +1,44 @@
+Breakpoint 1 at 0x712: file sigseg03.c, line 28.
+Breakpoint 2 at 0x7ae: file sigseg03.c, line 33.
+1: /a $sp = <error: No registers.>
+2: /a $rbp = <error: No registers.>
+Starting program: /home/marko/Desktop/PuRV/Lab01/Zadaca/zadaca 
+
+Breakpoint 1, main (argc=1, argv=0x7fffffffded8) at sigseg03.c:28
+28	 int main(int argc, char* argv[]){     
+1: /a $sp = 0x7fffffffdd90
+2: /a $rbp = 0x7fffffffddf0
+29		printf("%ld \n", INT_MAX);     
+1: /a $sp = 0x7fffffffdd90
+2: /a $rbp = 0x7fffffffddf0
+30		int n = INT_MAX;     
+1: /a $sp = 0x7fffffffdd90
+2: /a $rbp = 0x7fffffffddf0
+31		int A[n];     
+1: /a $sp = 0x7fffffffdd90
+2: /a $rbp = 0x7fffffffddf0
+32		int i = 0;     
+1: /a $sp = 0x7ffdffffdd90
+2: /a $rbp = 0x7fffffffddf0
+0x5555473d:	Cannot access memory at address 0x5555473d
+0x7ffdffffdd90:	Cannot access memory at address 0x7ffdffffdd90
+0x7fffffffdd88:	0x55555555473d <main+67>
+0x7ffdffffdd90:	Cannot access memory at address 0x7ffdffffdd90
+
+Breakpoint 2, main (argc=1, argv=0x7fffffffded8) at sigseg03.c:33
+33		while (i<n)       
+1: /a $sp = 0x7ffdffffdd90
+2: /a $rbp = 0x7fffffffddf0
+34		A[i] = rand()%10;        
+1: /a $sp = 0x7ffdffffdd90
+2: /a $rbp = 0x7fffffffddf0
+
+Program received signal SIGSEGV, Segmentation fault.
+main (argc=1, argv=0x7fffffffded8) at sigseg03.c:34
+34		A[i] = rand()%10;        
+1: /a $sp = 0x7ffdffffdd90
+2: /a $rbp = 0x7fffffffddf0
+
+Program terminated with signal SIGSEGV, Segmentation fault.
+The program no longer exists.
+The program is not being run.

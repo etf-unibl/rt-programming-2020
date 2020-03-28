@@ -1,0 +1,7 @@
+Implementovo sam potrebne biblioteke jer mi je pri kompajliranju bacalo greske.
+U gdb-output.txt se nalazi zadnje pokretanje, kako sam pokreto vise puta i pratio razne stvari pri ranijim pokretanjima kao 
+sto su registri eax i ecx pa sam njih sada zanemario jer me nisu doveli do resenja.
+Provjerio sam poziciju steacka prije i posle inicjalizovanja niza A i adresa od sp se promjeni sa 0x7fffffffdd90 na 0x7ffdffffdd90
+sta kad se izracuna dobijemo, bar sam ja tako dobio, 8 GB. Takodje sam jos provjerio da li je stvarno to sta je stalo na steack niz A
+tako sto sam provjerio lokaciju prvog i posljednjeg elementa.
+Zbog prepunog stecka sledeci put kad se nesto stavlja na njega, u nasem slucaju bi bila povratna adresa za rand() to ce baciti segmentation fault jer nema vise stecka kojem moze pristupit.

@@ -1,0 +1,2 @@
+Kada sam debagovao koristio sam echo komandu da izmedju ispisa komandi debagera stavim komentare sta znace ti ispisi i kako program funkcionise i zasto i kada dolazi
+do prekida izvrsavanja programa.

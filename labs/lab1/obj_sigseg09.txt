@@ -1,0 +1,5 @@
+Ovako segmentation fault se desava u funkciji----funkcija()------
+Desava se iz tog razloga sto smo alocirali memoriju za tri karaktera(3 bajta----malloc(3)),to vidimo pri izlasku iz malloc-a,na alokacije memorije
+imamo for petlju koja ide do 0xffffffff,sto je ogroman broj, pa indeks izlazi van datog opsega i nastavlja da upisuje karaktere u nepoznatu memoriju,tj. desava index put bound ili array out of bounds nisam bas
+siguran kako se tacno zove.
+Program sam ispravio tako sto sam for petlju samo prepravio da ide do 3,sto je logicnije nego da sam alocirao memoriju za 0xffffffff bajta. 
