@@ -115,7 +115,6 @@ __PRETTY_FUNCTION__	_IO_vfscanf_internal
  scanf(%d,n); -- scanf(%d,&n);
 
  ispravimo pretpostavljenu gresku ponovo pokrenemo program
-
 1
 
 ...Program finished with exit code 0
