@@ -1,0 +1,184 @@
+Script started on Pon 23 Mar 2020 10:38:48
+]0;neven@neven-VirtualBox: ~/Desktop[01;32mneven@neven-VirtualBox[00m:[01;34m~/Desktop[00m$ 
+]0;neven@neven-VirtualBox: ~/Desktop[01;32mneven@neven-VirtualBox[00m:[01;34m~/Desktop[00m$ gdb -q sigseg
+Reading symbols from sigseg...done.
+(gdb) r
+Starting program: /home/neven/Desktop/sigseg 
+
+Program received signal SIGSEGV, Segmentation fault.
+0x000000000040057b in main () at sigseg11.c:41
+41	     *(poruka+2) = 'x';
+(gdb) diss[Kas 7[K/s[C[1P/s
+Dump of assembler code for function main:
+sigseg11.c:
+35	{
+   0x0000000000400540 <+0>:	push   %rbp
+   0x0000000000400541 <+1>:	mov    %rsp,%rbp
+   0x0000000000400544 <+4>:	sub    $0x10,%rsp
+
+36		 char *poruka = "Suma brojeva 1 i 2 je";
+   0x0000000000400548 <+8>:	movq   $0x400634,-0x8(%rbp)
+
+37	     int n1=1;
+   0x0000000000400550 <+16>:	movl   $0x1,-0x10(%rbp)
+
+38	     int n2=2;
+   0x0000000000400557 <+23>:	movl   $0x2,-0xc(%rbp)
+
+39	     
+40	     suma=add_numbers(n1,n2);
+   0x000000000040055e <+30>:	mov    -0xc(%rbp),%edx
+   0x0000000000400561 <+33>:	mov    -0x10(%rbp),%eax
+   0x0000000000400564 <+36>:	mov    %edx,%esi
+   0x0000000000400566 <+38>:	mov    %eax,%edi
+   0x0000000000400568 <+40>:	callq  0x400526 <add_numbers>
+---Type <return> to continue, or q <return> to quit---return
+   0x000000000040056d <+45>:	mov    %eax,0x200ac9(%rip)        # 0x60103c <suma>
+
+41	     *(poruka+2) = 'x';
+   0x0000000000400573 <+51>:	mov    -0x8(%rbp),%rax
+   0x0000000000400577 <+55>:	add    $0x2,%rax
+=> 0x000000000040057b <+59>:	movb   $0x78,(%rax)
+
+42	     printf("%s %d\n", poruka, suma);
+   0x000000000040057e <+62>:	mov    0x200ab8(%rip),%edx        # 0x60103c <suma>
+   0x0000000000400584 <+68>:	mov    -0x8(%rbp),%rax
+   0x0000000000400588 <+72>:	mov    %rax,%rsi
+   0x000000000040058b <+75>:	mov    $0x40064a,%edi
+   0x0000000000400590 <+80>:	mov    $0x0,%eax
+   0x0000000000400595 <+85>:	callq  0x400400 <printf@plt>
+
+43	
+44	     return 0;
+   0x000000000040059a <+90>:	mov    $0x0,%eax
+
+45	}
+   0x000000000040059f <+95>:	leaveq 
+---Type <return> to continue, or q <return> to quit---q
+Quit
+(gdb) break main
+Breakpoint 1 at 0x400548: file sigseg11.c, line 36.
+(gdb) run[K[K
+The program being debugged has been started already.
+Start it from the beginning? (y or n) z[Ky
+Starting program: /home/neven/Desktop/sigseg 
+
+Breakpoint 1, main () at sigseg11.c:36
+36		 char *poruka = "Suma brojeva 1 i 2 je";
+(gdb) c
+Continuing.
+
+Program received signal SIGSEGV, Segmentation fault.
+0x000000000040057b in main () at sigseg11.c:41
+41	     *(poruka+2) = 'x';
+(gdb) displaz[Ky [K[K[K[K[K[K[K[Kdisas
+Dump of assembler code for function main:
+   0x0000000000400540 <+0>:	push   %rbp
+   0x0000000000400541 <+1>:	mov    %rsp,%rbp
+   0x0000000000400544 <+4>:	sub    $0x10,%rsp
+   0x0000000000400548 <+8>:	movq   $0x400634,-0x8(%rbp)
+   0x0000000000400550 <+16>:	movl   $0x1,-0x10(%rbp)
+   0x0000000000400557 <+23>:	movl   $0x2,-0xc(%rbp)
+   0x000000000040055e <+30>:	mov    -0xc(%rbp),%edx
+   0x0000000000400561 <+33>:	mov    -0x10(%rbp),%eax
+   0x0000000000400564 <+36>:	mov    %edx,%esi
+   0x0000000000400566 <+38>:	mov    %eax,%edi
+   0x0000000000400568 <+40>:	callq  0x400526 <add_numbers>
+   0x000000000040056d <+45>:	mov    %eax,0x200ac9(%rip)        # 0x60103c <suma>
+   0x0000000000400573 <+51>:	mov    -0x8(%rbp),%rax
+   0x0000000000400577 <+55>:	add    $0x2,%rax
+=> 0x000000000040057b <+59>:	movb   $0x78,(%rax)
+   0x000000000040057e <+62>:	mov    0x200ab8(%rip),%edx        # 0x60103c <suma>
+   0x0000000000400584 <+68>:	mov    -0x8(%rbp),%rax
+   0x0000000000400588 <+72>:	mov    %rax,%rsi
+   0x000000000040058b <+75>:	mov    $0x40064a,%edi
+   0x0000000000400590 <+80>:	mov    $0x0,%eax
+---Type <return> to continue, or q <return> to quit---q
+Quit
+(gdb) disas&[K/s
+Dump of assembler code for function main:
+sigseg11.c:
+35	{
+   0x0000000000400540 <+0>:	push   %rbp
+   0x0000000000400541 <+1>:	mov    %rsp,%rbp
+   0x0000000000400544 <+4>:	sub    $0x10,%rsp
+
+36		 char *poruka = "Suma brojeva 1 i 2 je";
+   0x0000000000400548 <+8>:	movq   $0x400634,-0x8(%rbp)
+
+37	     int n1=1;
+   0x0000000000400550 <+16>:	movl   $0x1,-0x10(%rbp)
+
+38	     int n2=2;
+   0x0000000000400557 <+23>:	movl   $0x2,-0xc(%rbp)
+
+39	     
+40	     suma=add_numbers(n1,n2);
+   0x000000000040055e <+30>:	mov    -0xc(%rbp),%edx
+   0x0000000000400561 <+33>:	mov    -0x10(%rbp),%eax
+   0x0000000000400564 <+36>:	mov    %edx,%esi
+   0x0000000000400566 <+38>:	mov    %eax,%edi
+   0x0000000000400568 <+40>:	callq  0x400526 <add_numbers>
+---Type <return> to continue, or q <return> to quit---q
+Quit
+(gdb) disas
+Dump of assembler code for function main:
+   0x0000000000400540 <+0>:	push   %rbp
+   0x0000000000400541 <+1>:	mov    %rsp,%rbp
+   0x0000000000400544 <+4>:	sub    $0x10,%rsp
+   0x0000000000400548 <+8>:	movq   $0x400634,-0x8(%rbp)
+   0x0000000000400550 <+16>:	movl   $0x1,-0x10(%rbp)
+   0x0000000000400557 <+23>:	movl   $0x2,-0xc(%rbp)
+   0x000000000040055e <+30>:	mov    -0xc(%rbp),%edx
+   0x0000000000400561 <+33>:	mov    -0x10(%rbp),%eax
+   0x0000000000400564 <+36>:	mov    %edx,%esi
+   0x0000000000400566 <+38>:	mov    %eax,%edi
+   0x0000000000400568 <+40>:	callq  0x400526 <add_numbers>
+   0x000000000040056d <+45>:	mov    %eax,0x200ac9(%rip)        # 0x60103c <suma>
+   0x0000000000400573 <+51>:	mov    -0x8(%rbp),%rax
+   0x0000000000400577 <+55>:	add    $0x2,%rax
+=> 0x000000000040057b <+59>:	movb   $0x78,(%rax)
+   0x000000000040057e <+62>:	mov    0x200ab8(%rip),%edx        # 0x60103c <suma>
+   0x0000000000400584 <+68>:	mov    -0x8(%rbp),%rax
+   0x0000000000400588 <+72>:	mov    %rax,%rsi
+   0x000000000040058b <+75>:	mov    $0x40064a,%edi
+   0x0000000000400590 <+80>:	mov    $0x0,%eax
+---Type <return> to continue, or q <return> to quit---return[K[K[K[K[K[Kq
+Quit
+(gdb) info registers
+rax            0x400636	4195894
+rbx            0x0	0
+rcx            0x0	0
+rdx            0x1	1
+rsi            0x2	2
+rdi            0x1	1
+rbp            0x7fffffffdd40	0x7fffffffdd40
+rsp            0x7fffffffdd30	0x7fffffffdd30
+r8             0x400620	4195872
+r9             0x7ffff7de78e0	140737351940320
+r10            0x846	2118
+r11            0x7ffff7a2e740	140737348036416
+r12            0x400430	4195376
+r13            0x7fffffffde20	140737488346656
+r14            0x0	0
+r15            0x0	0
+rip            0x40057b	0x40057b <main+59>
+eflags         0x10206	[ PF IF RF ]
+cs             0x33	51
+ss             0x2b	43
+ds             0x0	0
+es             0x0	0
+fs             0x0	0
+---Type <return> to continue, or q <return> to quit---q
+Quit
+(gdb) exit[K[K[K[Kq
+A debugging session is active.
+
+	Inferior 1 [process 4427] will be killed.
+
+Quit anyway? (y or n) z[Ky
+]0;neven@neven-VirtualBox: ~/Desktop[01;32mneven@neven-VirtualBox[00m:[01;34m~/Desktop[00m$ clear
+[3;J[H[2J]0;neven@neven-VirtualBox: ~/Desktop[01;32mneven@neven-VirtualBox[00m:[01;34m~/Desktop[00m$ exit
+exit
+
+Script done on Pon 23 Mar 2020 11:01:15

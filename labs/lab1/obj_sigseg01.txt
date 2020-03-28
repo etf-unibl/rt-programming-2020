@@ -1,0 +1,4 @@
+Program ne izbacuje gresku ukoliko mu se uredno proslijede argumenti na komandoj liniji. Medjutim ako se ne proslijedi nikakav argument, onda se desi segmentation fault. 
+Kada se program pokrene sa argumentom, debagovanjem vidmo da se prije izvrsenja instrukcije (callq  0x5555555545d0 <strlen@plt>) u registru rdi nalazi adresa argumenta. A znamo da ako je broj argumenata koje proslijedjujemo funkciji manji od 6, argumenti se nalaze u registrima rdi, rsi,... 
+Zato kad pokrenemo progam bez argumenta u komandnoj liniji, prije izvresnja instrukcije (callq  0x5555555545d0 <strlen@plt>), u registru rdi bude vrijednost 0x0 i zbog toga se desi segmentation fault, jer funkciji nije proslijedjen dobar argument(adresa).
+Rijesenje tog problema bi bilo provjera da li je proslijedjen dovoljan broj argumenata, kao sto je dato u sigseg01_rijesenje.c

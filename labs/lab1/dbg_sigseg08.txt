@@ -1,0 +1,133 @@
+#list
+24	
+25	#include <stdio.h>
+26	#include <stdlib.h>
+27	#include <string.h>
+28	
+29	void funkcija()
+30	{
+31	    float *a, *b; 
+32	    a = (float*)malloc(1000);
+33	    b[0] = 1.0;
+34	}
+35	
+36	int main(int argc, char **argv)
+37	{
+38		funkcija();
+39		return 0;
+40	}
+41
+	
+#break main-postavljam break na main
+
+Breakpoint 1 at 0x682: file sigseg08.c, line 38.
+
+#run-pokrecem do prvog break-a
+
+Starting program: /home/sasa/Desktop/RT/LAB1/sig/sig 
+
+Breakpoint 1, main (argc=1, argv=0x7fffffffdf38) at sigseg08.c:38
+38		funkcija();
+
+#disas/s-assembly code
+
+Dump of assembler code for function main:
+sigseg08.c:
+37	{
+   0x0000555555554673 <+0>:	push   %rbp
+   0x0000555555554674 <+1>:	mov    %rsp,%rbp
+   0x0000555555554677 <+4>:	sub    $0x10,%rsp
+   0x000055555555467b <+8>:	mov    %edi,-0x4(%rbp)
+   0x000055555555467e <+11>:	mov    %rsi,-0x10(%rbp)
+
+38		funkcija();
+=> 0x0000555555554682 <+15>:	mov    $0x0,%eax
+   0x0000555555554687 <+20>:	callq  0x55555555464a <funkcija>
+
+39		return 0;
+   0x000055555555468c <+25>:	mov    $0x0,%eax
+
+40	}
+   0x0000555555554691 <+30>:	leaveq 
+   0x0000555555554692 <+31>:	retq   
+End of assembler dump.
+
+#nexti-prelazim na sledecu instrukciju
+
+0x0000555555554687	38		funkcija();
+
+#stepi-prelazim na sledecu instrukciju i ulazim u funkciju
+
+funkcija () at sigseg08.c:30
+30	{
+
+#disas/s-prikazujem asemblerski kod funkcije
+
+Dump of assembler code for function funkcija:
+sigseg08.c:
+30	{
+=> 0x000055555555464a <+0>:	push   %rbp
+   0x000055555555464b <+1>:	mov    %rsp,%rbp
+   0x000055555555464e <+4>:	sub    $0x10,%rsp
+
+31	    float *a, *b; 
+32	    a = (float*)malloc(1000);
+   0x0000555555554652 <+8>:	mov    $0x3e8,%edi
+   0x0000555555554657 <+13>:	callq  0x555555554520 <malloc@plt>
+   0x000055555555465c <+18>:	mov    %rax,-0x10(%rbp)
+
+33	    b[0] = 1.0;
+   0x0000555555554660 <+22>:	mov    -0x8(%rbp),%rax
+   0x0000555555554664 <+26>:	movss  0xb8(%rip),%xmm0        # 0x555555554724
+   0x000055555555466c <+34>:	movss  %xmm0,(%rax)
+
+34	}
+   0x0000555555554670 <+38>:	nop
+   0x0000555555554671 <+39>:	leaveq 
+   0x0000555555554672 <+40>:	retq   
+End of assembler dump.
+
+#nexti-prolazim kroz instrukcije(jedna po jedna)
+
+0x000055555555464b	30	{
+0x000055555555464e	30	{
+32	    a = (float*)malloc(1000);
+a = 0x7ffff7de59a0 <_dl_fini>
+b = 0x0
+
+#info locals-ispisujem lokalne promjenljive i njihove vrijednosti
+a = 0x7ffff7de59a0 <_dl_fini>
+b = 0x0
+
+#nexti
+
+0x0000555555554657	32	    a = (float*)malloc(1000);
+0x000055555555465c	32	    a = (float*)malloc(1000);
+33	    b[0] = 1.0;
+print(a)-ispisujem vrijednost promjenljive a
+$1 = (float *) 0x555555756260
+print(b)
+$3 = (float *) 0x0
+
+#nexti
+
+0x0000555555554664	33	    b[0] = 1.0;
+0x000055555555466c	33	    b[0] = 1.0;
+
+Program received signal SIGSEGV, Segmentation fault.
+0x000055555555466c in funkcija () at sigseg08.c:33
+33	    b[0] = 1.0;
+
+#Ispisan Segmentation fault- potrebno pronaci razlog greske
+#display b-Pokusacu ispisati promjenljivu b jer se greska desila na liniji prilikom dodjele 33
+
+1: b = (float *) 0x0
+
+#x/nfu b
+0x0:	Cannot access memory at address 0x0
+
+#B je pokazivac (float *) i vrijednost promjenljive b=0, kako to nije dozvoljena adresa dolazi do greske, a sa b[0] pokusavamo promijeniti vrijednost na adresi koja u ovom slucaju nije dozvoljena. To je razlog segmentation fault-a.
+
+Program terminated with signal SIGSEGV, Segmentation fault.
+The program no longer exists.
+quit
