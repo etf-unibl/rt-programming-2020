@@ -1,0 +1,149 @@
+
+ b main 
+Breakpoint 1 at 0x729: file sigseg01.c, line 30.
+
+ r 
+Starting program: /home/sasa/Desktop/sasa_tomic_lab01/sigseg01 
+
+Breakpoint 1, main (argc=1, argv=0x7fffffffdf68) at sigseg01.c:30
+30	   char* name = malloc(strlen(argv[1])) ;
+
+ info registers 
+rax            0x55555555471a	93824992233242
+rbx            0x0	0
+rcx            0x555555554790	93824992233360
+rdx            0x7fffffffdf78	140737488347000
+rsi            0x7fffffffdf68	140737488346984
+rdi            0x1	1
+rbp            0x7fffffffde80	0x7fffffffde80
+rsp            0x7fffffffde60	0x7fffffffde60
+r8             0x7ffff7dd0d80	140737351847296
+r9             0x7ffff7dd0d80	140737351847296
+r10            0x0	0
+r11            0x0	0
+r12            0x555555554610	93824992232976
+r13            0x7fffffffdf60	140737488346976
+r14            0x0	0
+r15            0x0	0
+rip            0x555555554729	0x555555554729 <main+15>
+eflags         0x206	[ PF IF ]
+cs             0x33	51
+ss             0x2b	43
+ds             0x0	0
+es             0x0	0
+fs             0x0	0
+gs             0x0	0
+
+ disas /s 
+Dump of assembler code for function main:
+sigseg01.c:
+29	int main(int argc, char* argv[]){
+   0x000055555555471a <+0>:	push   %rbp
+   0x000055555555471b <+1>:	mov    %rsp,%rbp
+   0x000055555555471e <+4>:	sub    $0x20,%rsp
+   0x0000555555554722 <+8>:	mov    %edi,-0x14(%rbp)
+   0x0000555555554725 <+11>:	mov    %rsi,-0x20(%rbp)
+
+30	   char* name = malloc(strlen(argv[1])) ;
+=> 0x0000555555554729 <+15>:	mov    -0x20(%rbp),%rax
+   0x000055555555472d <+19>:	add    $0x8,%rax
+   0x0000555555554731 <+23>:	mov    (%rax),%rax
+   0x0000555555554734 <+26>:	mov    %rax,%rdi
+   0x0000555555554737 <+29>:	callq  0x5555555545d0 <strlen@plt>
+   0x000055555555473c <+34>:	mov    %rax,%rdi
+   0x000055555555473f <+37>:	callq  0x5555555545f0 <malloc@plt>
+   0x0000555555554744 <+42>:	mov    %rax,-0x8(%rbp)
+
+31	   name = strcpy(name,argv[1]);
+   0x0000555555554748 <+46>:	mov    -0x20(%rbp),%rax
+   0x000055555555474c <+50>:	add    $0x8,%rax
+   0x0000555555554750 <+54>:	mov    (%rax),%rdx
+   0x0000555555554753 <+57>:	mov    -0x8(%rbp),%rax
+   0x0000555555554757 <+61>:	mov    %rdx,%rsi
+   0x000055555555475a <+64>:	mov    %rax,%rdi
+   0x000055555555475d <+67>:	callq  0x5555555545c0 <strcpy@plt>
+   0x0000555555554762 <+72>:	mov    %rax,-0x8(%rbp)
+
+32	   printf("%s \n", name);
+   0x0000555555554766 <+76>:	mov    -0x8(%rbp),%rax
+   0x000055555555476a <+80>:	mov    %rax,%rsi
+   0x000055555555476d <+83>:	lea    0xa0(%rip),%rdi        # 0x555555554814
+   0x0000555555554774 <+90>:	mov    $0x0,%eax
+   0x0000555555554779 <+95>:	callq  0x5555555545e0 <printf@plt>
+
+33	   return EXIT_SUCCESS;
+   0x000055555555477e <+100>:	mov    $0x0,%eax
+
+34	 } 
+   0x0000555555554783 <+105>:	leaveq 
+   0x0000555555554784 <+106>:	retq   
+End of assembler dump.
+
+ display /a $rdi 
+1: /a $rdi = 0x1
+
+ display /a $rax 
+2: /a $rax = 0x55555555471a <main>
+
+ display /a $rbp 
+3: /a $rbp = 0x7fffffffde80
+
+ stepi 4 
+0x0000555555554737	30	   char* name = malloc(strlen(argv[1])) ;
+1: /a $rdi = 0x0
+2: /a $rax = 0x0
+3: /a $rbp = 0x7fffffffde80
+
+ disas /s 
+Dump of assembler code for function main:
+sigseg01.c:
+29	int main(int argc, char* argv[]){
+   0x000055555555471a <+0>:	push   %rbp
+   0x000055555555471b <+1>:	mov    %rsp,%rbp
+   0x000055555555471e <+4>:	sub    $0x20,%rsp
+   0x0000555555554722 <+8>:	mov    %edi,-0x14(%rbp)
+   0x0000555555554725 <+11>:	mov    %rsi,-0x20(%rbp)
+
+30	   char* name = malloc(strlen(argv[1])) ;
+   0x0000555555554729 <+15>:	mov    -0x20(%rbp),%rax
+   0x000055555555472d <+19>:	add    $0x8,%rax
+   0x0000555555554731 <+23>:	mov    (%rax),%rax
+   0x0000555555554734 <+26>:	mov    %rax,%rdi
+=> 0x0000555555554737 <+29>:	callq  0x5555555545d0 <strlen@plt>
+   0x000055555555473c <+34>:	mov    %rax,%rdi
+   0x000055555555473f <+37>:	callq  0x5555555545f0 <malloc@plt>
+   0x0000555555554744 <+42>:	mov    %rax,-0x8(%rbp)
+
+31	   name = strcpy(name,argv[1]);
+   0x0000555555554748 <+46>:	mov    -0x20(%rbp),%rax
+   0x000055555555474c <+50>:	add    $0x8,%rax
+   0x0000555555554750 <+54>:	mov    (%rax),%rdx
+   0x0000555555554753 <+57>:	mov    -0x8(%rbp),%rax
+   0x0000555555554757 <+61>:	mov    %rdx,%rsi
+   0x000055555555475a <+64>:	mov    %rax,%rdi
+   0x000055555555475d <+67>:	callq  0x5555555545c0 <strcpy@plt>
+   0x0000555555554762 <+72>:	mov    %rax,-0x8(%rbp)
+
+32	   printf("%s \n", name);
+   0x0000555555554766 <+76>:	mov    -0x8(%rbp),%rax
+   0x000055555555476a <+80>:	mov    %rax,%rsi
+   0x000055555555476d <+83>:	lea    0xa0(%rip),%rdi        # 0x555555554814
+   0x0000555555554774 <+90>:	mov    $0x0,%eax
+   0x0000555555554779 <+95>:	callq  0x5555555545e0 <printf@plt>
+
+33	   return EXIT_SUCCESS;
+   0x000055555555477e <+100>:	mov    $0x0,%eax
+
+34	 } 
+   0x0000555555554783 <+105>:	leaveq 
+   0x0000555555554784 <+106>:	retq   
+End of assembler dump.
+
+ n 
+
+Program received signal SIGSEGV, Segmentation fault.
+__strlen_sse2 () at ../sysdeps/x86_64/multiarch/../strlen.S:120
+120	../sysdeps/x86_64/multiarch/../strlen.S: No such file or directory.
+1: /a $rdi = 0x0
+2: /a $rax = 0x0
+3: /a $rbp = 0x7fffffffde80

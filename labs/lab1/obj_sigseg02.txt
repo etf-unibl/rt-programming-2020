@@ -1,0 +1,6 @@
+Prilikom kompajliranja programa, dobijemo warning: format ‘%d’ expects argument of type ‘int *’, but argument 2 has type ‘int’ [-Wformat=]
+  scanf("%d",*ptr);   
+sto znaci da postoji sansa da nesto nije u redu. 
+Program u 32 liniji koda izacuje segmentation fault.
+Nakon alociranja memorije (30. linije koda), vrijednost ptr je adresa na koju on pokazuje, a na toj adresi se nalazi neka vrijednost. Nakon oslobadjanja memorije (31. linija), vrijednost ptr ostaje ista, tj on i dalje pokazuje na jednu adresu, samo su ostale oslobodjene koje su bile zauzete.
+Funkcija scanf, kao drugi argument prima adresu promjenljive na koju ce upisati unesenu vrijednost, a u programu je funkciji scanf kao drugi argument proslijedjena vrijednost promjenljive, a ne adresa i zbog toga dolazi do segmentation fault. Rijesenje ovog problema je da se funkciji scanf posalje adresa na koju moze upisati vrijednost, odnosno da se samo obrise * prije ptr prilikom poziva funkcije.

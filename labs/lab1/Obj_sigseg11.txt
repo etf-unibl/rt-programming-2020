@@ -1,0 +1,1 @@
+program je davao segmentation fault jer se pokusavao promijeniti ro string.

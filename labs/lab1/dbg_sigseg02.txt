@@ -1,0 +1,99 @@
+
+ b 30 
+Breakpoint 1 at 0x709: file sigseg02.c, line 30.
+
+ r 
+Starting program: /home/dajana/Downloads/2020.lab01/zadaca1/zadacaa 
+
+Breakpoint 1, main (argc=1, argv=0x7fffffffde98) at sigseg02.c:30
+30		int* ptr = malloc(4);
+
+ disas /s 
+Dump of assembler code for function main:
+sigseg02.c:
+29	int main(int argc, char* argv[]){  
+   0x00005555555546fa <+0>:	push   %rbp
+   0x00005555555546fb <+1>:	mov    %rsp,%rbp
+   0x00005555555546fe <+4>:	sub    $0x20,%rsp
+   0x0000555555554702 <+8>:	mov    %edi,-0x14(%rbp)
+   0x0000555555554705 <+11>:	mov    %rsi,-0x20(%rbp)
+
+30		int* ptr = malloc(4);
+=> 0x0000555555554709 <+15>:	mov    $0x4,%edi
+   0x000055555555470e <+20>:	callq  0x5555555545c0 <malloc@plt>
+   0x0000555555554713 <+25>:	mov    %rax,-0x8(%rbp)
+
+31		free(ptr);
+   0x0000555555554717 <+29>:	mov    -0x8(%rbp),%rax
+   0x000055555555471b <+33>:	mov    %rax,%rdi
+   0x000055555555471e <+36>:	callq  0x5555555545b0 <free@plt>
+
+32		scanf("%d",*ptr);   
+   0x0000555555554723 <+41>:	mov    -0x8(%rbp),%rax
+   0x0000555555554727 <+45>:	mov    (%rax),%eax
+   0x0000555555554729 <+47>:	mov    %eax,%esi
+   0x000055555555472b <+49>:	lea    0xa2(%rip),%rdi        # 0x5555555547d4
+   0x0000555555554732 <+56>:	mov    $0x0,%eax
+   0x0000555555554737 <+61>:	callq  0x5555555545d0 <__isoc99_scanf@plt>
+
+33	 
+34	
+35		return EXIT_SUCCESS; 
+   0x000055555555473c <+66>:	mov    $0x0,%eax
+
+36	}
+   0x0000555555554741 <+71>:	leaveq 
+   0x0000555555554742 <+72>:	retq   
+End of assembler dump.
+
+ print ptr 
+$1 = (int *) 0x0
+
+ n 
+31		free(ptr);
+
+ print ptr 
+$2 = (int *) 0x555555756260
+
+ n 
+32		scanf("%d",*ptr);   
+
+ print ptr 
+$3 = (int *) 0x555555756260
+
+ x /a ptr 
+0x555555756260:	0x0
+
+ info registers 
+rax            0x0	0
+rbx            0x0	0
+rcx            0x1	1
+rdx            0x555555756010	93824994336784
+rsi            0x555555756010	93824994336784
+rdi            0x0	0
+rbp            0x7fffffffddb0	0x7fffffffddb0
+rsp            0x7fffffffdd90	0x7fffffffdd90
+r8             0x2	2
+r9             0x0	0
+r10            0x555555756010	93824994336784
+r11            0x0	0
+r12            0x5555555545f0	93824992232944
+r13            0x7fffffffde90	140737488346768
+r14            0x0	0
+r15            0x0	0
+rip            0x555555554723	0x555555554723 <main+41>
+eflags         0x202	[ IF ]
+cs             0x33	51
+ss             0x2b	43
+ds             0x0	0
+es             0x0	0
+fs             0x0	0
+gs             0x0	0
+
+ n 
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff7a538c2 in _IO_vfscanf_internal (s=<optimized out>, 
+    format=<optimized out>, argptr=argptr@entry=0x7fffffffdcb0, 
+    errp=errp@entry=0x0) at vfscanf.c:1898
+1898	vfscanf.c: No such file or directory.
