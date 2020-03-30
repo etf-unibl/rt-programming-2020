@@ -1,0 +1,125 @@
+Reading symbols from sigseg...done.
+Breakpoint 1 at 0x731: file sigseg06.c, line 30.
+Starting program: /home/kljestan/PURV/Lab01/sigseg 
+
+Breakpoint 1, getInt () at sigseg06.c:30
+30		printf("Unesi broj: ");
+Dump of assembler code for function getInt:
+sigseg06.c:
+28	int * getInt(){
+   0x000055555555471a <+0>:	push   %rbp
+   0x000055555555471b <+1>:	mov    %rsp,%rbp
+   0x000055555555471e <+4>:	sub    $0x10,%rsp
+   0x0000555555554722 <+8>:	mov    %fs:0x28,%rax
+   0x000055555555472b <+17>:	mov    %rax,-0x8(%rbp)
+   0x000055555555472f <+21>:	xor    %eax,%eax
+
+29		int val;
+30		printf("Unesi broj: ");
+=> 0x0000555555554731 <+23>:	lea    0x10c(%rip),%rdi        # 0x555555554844
+   0x0000555555554738 <+30>:	mov    $0x0,%eax
+   0x000055555555473d <+35>:	callq  0x5555555545e0 <printf@plt>
+
+31		scanf("%d", &val);
+   0x0000555555554742 <+40>:	lea    -0xc(%rbp),%rax
+   0x0000555555554746 <+44>:	mov    %rax,%rsi
+   0x0000555555554749 <+47>:	lea    0x101(%rip),%rdi        # 0x555555554851
+   0x0000555555554750 <+54>:	mov    $0x0,%eax
+   0x0000555555554755 <+59>:	callq  0x5555555545f0 <__isoc99_scanf@plt>
+
+32		return(&val);
+   0x000055555555475a <+64>:	mov    $0x0,%eax
+
+33	}
+   0x000055555555475f <+69>:	mov    -0x8(%rbp),%rdx
+   0x0000555555554763 <+73>:	xor    %fs:0x28,%rdx
+   0x000055555555476c <+82>:	je     0x555555554773 <getInt+89>
+   0x000055555555476e <+84>:	callq  0x5555555545d0 <__stack_chk_fail@plt>
+   0x0000555555554773 <+89>:	leaveq 
+   0x0000555555554774 <+90>:	retq   
+End of assembler dump.
+rax            0x0	0
+rbx            0x0	0
+rcx            0x5555555547c0	93824992233408
+rdx            0x7fffffffdd68	140737488346472
+rsi            0x7fffffffdd58	140737488346456
+rdi            0x1	1
+rbp            0x7fffffffdc40	0x7fffffffdc40
+rsp            0x7fffffffdc30	0x7fffffffdc30
+r8             0x7ffff7dd0d80	140737351847296
+r9             0x7ffff7dd0d80	140737351847296
+r10            0x0	0
+r11            0x0	0
+r12            0x555555554610	93824992232976
+r13            0x7fffffffdd50	140737488346448
+r14            0x0	0
+r15            0x0	0
+rip            0x555555554731	0x555555554731 <getInt+23>
+eflags         0x246	[ PF ZF IF ]
+cs             0x33	51
+ss             0x2b	43
+ds             0x0	0
+es             0x0	0
+fs             0x0	0
+gs             0x0	0
+$1 = (int *) 0x7fffffffdc34
+Continuing.
+
+Program received signal SIGSEGV, Segmentation fault.
+0x0000555555554796 in main (argc=1, argv=0x7fffffffdd58) at sigseg06.c:39
+39		printf("Unijet je: %d\n", *pi);
+Dump of assembler code for function main:
+sigseg06.c:
+36	{
+   0x0000555555554775 <+0>:	push   %rbp
+   0x0000555555554776 <+1>:	mov    %rsp,%rbp
+   0x0000555555554779 <+4>:	sub    $0x20,%rsp
+   0x000055555555477d <+8>:	mov    %edi,-0x14(%rbp)
+   0x0000555555554780 <+11>:	mov    %rsi,-0x20(%rbp)
+
+37		int * pi;
+38		pi = getInt();
+   0x0000555555554784 <+15>:	mov    $0x0,%eax
+   0x0000555555554789 <+20>:	callq  0x55555555471a <getInt>
+   0x000055555555478e <+25>:	mov    %rax,-0x8(%rbp)
+
+39		printf("Unijet je: %d\n", *pi);
+   0x0000555555554792 <+29>:	mov    -0x8(%rbp),%rax
+=> 0x0000555555554796 <+33>:	mov    (%rax),%eax
+   0x0000555555554798 <+35>:	mov    %eax,%esi
+   0x000055555555479a <+37>:	lea    0xb3(%rip),%rdi        # 0x555555554854
+   0x00005555555547a1 <+44>:	mov    $0x0,%eax
+   0x00005555555547a6 <+49>:	callq  0x5555555545e0 <printf@plt>
+
+40		return 0;
+   0x00005555555547ab <+54>:	mov    $0x0,%eax
+
+41	}
+   0x00005555555547b0 <+59>:	leaveq 
+   0x00005555555547b1 <+60>:	retq   
+End of assembler dump.
+rax            0x0	0
+rbx            0x0	0
+rcx            0x10	16
+rdx            0x0	0
+rsi            0x1	1
+rdi            0x0	0
+rbp            0x7fffffffdc70	0x7fffffffdc70
+rsp            0x7fffffffdc50	0x7fffffffdc50
+r8             0x0	0
+r9             0x0	0
+r10            0x7ffff7b82cc0	140737349430464
+r11            0x555555554853	93824992233555
+r12            0x555555554610	93824992232976
+r13            0x7fffffffdd50	140737488346448
+r14            0x0	0
+r15            0x0	0
+rip            0x555555554796	0x555555554796 <main+33>
+eflags         0x10246	[ PF ZF IF RF ]
+cs             0x33	51
+ss             0x2b	43
+ds             0x0	0
+es             0x0	0
+fs             0x0	0
+gs             0x0	0
+$2 = (int *) 0x0
