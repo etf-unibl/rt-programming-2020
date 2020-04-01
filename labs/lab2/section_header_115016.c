@@ -1,3 +1,8 @@
+/* 
+* Dejan MIlojica 1150/16
+* Section Header
+*/
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<stdint.h>
