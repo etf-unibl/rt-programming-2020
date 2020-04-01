@@ -21,8 +21,7 @@ Credits:
 http://www.skyfree.org/linux/references/ELF_Format.pdf
 https://docs.oracle.com/cd/E19683-01/817-0679/6mgfb8784/index.html
 https://refspecs.linuxbase.org/elf/gabi4+/ch4.symtab.html
-https://docs.oracle.com/cd/E19683-01/816-1386/6m7qcoblj/index.html#chapter7-27
-
+ 
 Nedo Todoric
 01.04.2020. 
 */
