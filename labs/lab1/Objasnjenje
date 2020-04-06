@@ -1,0 +1,1 @@
+Greska je u tome sto funkcija "getInt" vraca adresu promenjive "val", a promenjiva "val" je lokalna promenjiva i njen zivotni vek je tokom trajanja funkcije "getInt".
