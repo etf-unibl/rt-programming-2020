@@ -24,6 +24,10 @@ https://refspecs.linuxbase.org/elf/gabi4+/ch4.symtab.html
  
 Nedo Todoric
 01.04.2020. 
+
+
+sudo apt-get install libelf-dev
+gcc symbols_11130_17.c -l elf -o exe_name
 */
 
 #ifndef TRUE
