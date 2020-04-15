@@ -100,7 +100,8 @@ int main(){
 		
 		//Ispis neophodnih podataka, koji definisu flag skracenice.
 		ispis_flag_objasnjenja();
-
+		
+		free(string_table);
 		fclose(ptr);
 	}else
 		printf("Nepostojeca izvrsna datoteka!\n");
@@ -142,7 +143,10 @@ String_Table* string_table_analiza(Elf64_Ehdr file_header, FILE *ptr){
 	char znak;
 	for(int i=1;i<=section_header.sh_size;i++){
 		fread(&znak,sizeof(znak),1,ptr);
-		if(znak=='\0') N++;
+		if(znak=='\0') 
+			N++;
+		else{
+		}
 	}
 	string_tabela = (String_Table*)malloc(sizeof(String_Table)*N);
 	int n=-1, k=0;
