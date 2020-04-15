@@ -23,8 +23,9 @@ Početno stanje populacije, se preuzima iz datoteke "mapa.txt". Na taj način se
 	- Veća popunjenost matrice jedinicama, ne znaci da će simulacija duze trajati!
 
  Ono sto se pokazuje kao interesantno, je da započnemo sa nekim od vec poznatih sablona:
+ 
  <p align="center">
-  <src="./imgs/Sabloni.png">
+	![PrikazPrioritetaNiti](./imgs/Sabloni.png)
 </p>
 
 
@@ -33,8 +34,8 @@ Početno stanje populacije, se preuzima iz datoteke "mapa.txt". Na taj način se
  Realizacija se bazira na koriscenju C programskog jezika, odnosno <pthread.h> biblioteke, koja nam omogucava rad sa nitima. Svako polje/celija, predstavlja jednu programsku nit, pored glavne/main niti. Izvrsavanje niti se bazira na prioritetima.
  Svaka nit ima svoj prioritet. Prioriteti su prikazani na slici:
 
- <p align="center">
-  <src="./imgs/CGofLife.bmp">
+<p align="center">
+	![PrikazPrioritetaNiti](./imgs/CGofLife.bmp)
 </p>
 
  Manja vrijednost, predstavlja veci prioritet, samim tim ima i "prednost" u izvrsavanju, u odnosu na ostale niti manjeg prioriteta!
