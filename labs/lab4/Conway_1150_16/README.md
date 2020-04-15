@@ -12,10 +12,10 @@ Početno stanje populacije, se preuzima iz datoteke "mapa.txt". Na taj način se
  Takva populacija, se dalje kroz simulaciju razvija prema određenom skupu pravila. Skup pravila određuje šta se događa sa svakom ćelijom iz jedne generacije (konfiguracija živih i mrtvih ćelija) do druge.
 
  Pravila:
-	- 	Polje živo, broj susjednih živih polja ,0 ili 1, u sljedećoj generaciji, ovo polje je mrtvo!
-	-	Broj susjednih živih polja jednak 2, polje zadrzava stanje!
-	-	Polje mrtvo, broj susjednih živih polja jednak 3, polje oživljava!
-	-	Broj susjednih živih polja 4 ili vise, polje mrtvo!
+	- Polje živo, broj susjednih živih polja ,0 ili 1, u sljedećoj generaciji, ovo polje je mrtvo!
+	- Broj susjednih živih polja jednak 2, polje zadrzava stanje!
+	- Polje mrtvo, broj susjednih živih polja jednak 3, polje oživljava!
+	- Broj susjednih živih polja 4 ili vise, polje mrtvo!
 
  Ukoliko simulaciju započnemo sa svim praznim poljima, takva ce i ostati. Ukoliko započnemo sa 1 ili 2 polja koji su zivi, simulacija će poživjeti samo jedan ciklus, jer će umrijeti usljed nedovoljnog susjedstva! Ukoliko zapocnemo sa punom matricom, u sljedecoj generaciji će ostati samo 4 krajnja polja. Početno stanje mozemo generisati i slučajno, ili proizvoljnim postavljanjem jedinica na zeljene pozicije.
 
