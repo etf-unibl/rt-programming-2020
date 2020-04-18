@@ -33,6 +33,33 @@ int is_numeric(char *string)
 	}
 	return 0;
 }
+/*citanje fajla koji predstavlja stanje celija, vraca -1 u slucaju greske, u suprotnom 0*/
+int read_map(int **state)
+{
+	FILE *fp;
+	int i,j;
+	char x;
+	fp = fopen("../map.txt","r");
+	if(fp==NULL)
+	{
+		return -1;	
+	}
+	else
+	{
+		for(i = 0; i < N; i++)
+		{
+			for(j = 0; j < N; j++)
+			{
+			        x = fgetc(fp);
+				state[i][j] = x=='1' ? ALIVE : !ALIVE;
+				
+			}
+			x=fgetc(fp);
+		}
+		fclose(fp);
+	}
+       return 0;
+}
 /*funkcija za inicijalizaciju semafora, vraca -1 u slucaju greske, u suprotnom 0 */
 int init_semaphores()	
 {
@@ -185,16 +212,22 @@ void *thread(void *arg)
  */
 int main(int argc,char *argv[])
 {
-	if(argc<2)
+	if(argc<3)
 	{
 		printf("Greska, nedovoljan broj argumenata\n");
-		printf("Unesite vrijeme[ms]\n");
+		printf("Unesite argumente navedenim redom\n");
+		printf("Vrijeme azuriranja stanja[ms]\n");
+		printf("Samo jednu od opcija | 1-slucajno generisanje zivih celija | 2-citaj iz mape|\n");
+		printf("Primjer:./conway.c 150 1\n");
 		return EXIT_FAILURE;
 	}
-	if(is_numeric(argv[1]))
+	if(is_numeric(argv[1]) || (argv[2][0]!='1' && argv[2][0]!='2'))
 	{
 		printf("Greska, nedozvoljen unos\n");
-		printf("Unesite vrijeme[ms]\n");
+		printf("Unesite argumente navedenim redom\n");
+		printf("Vrijeme azuriranja stanja[ms]\n");
+		printf("Samo jednu od opcija | 1-slucajno generisanje zivih celija | 2-citaj iz mape|\n");
+		printf("Primjer:./conway.c 150 1\n");
 		return EXIT_FAILURE;		
 	}
 	mili=atoi(argv[1]);
@@ -203,8 +236,7 @@ int main(int argc,char *argv[])
 	int index[((N*N))],i,j;
 	old_gen=(int **) malloc(sizeof(int *)*N);
 	new_gen=(int **)malloc(sizeof(int *)*N);
-	srand(time(NULL));
-	int n=rand()%(N*N)+1;
+	
 	if(old_gen==NULL || new_gen==NULL)
 	{
 		printf("Nije moguce alocirati potrebnu memoriju\n");
@@ -229,21 +261,32 @@ int main(int argc,char *argv[])
 		{
 			old_gen[i][j]=!ALIVE;
 		}
-
-	
-	/*bira slucajnih 30 pozicija na kojima cemo imati zive celije*/
+	if(argv[2][0]=='1')
+	{
+	//bira slucajnih 30 pozicija na kojima cemo imati zive celije
+	srand(time(NULL));
+	int n=rand()%(N*N)+1;
 	for(i=0;i<n;i++)
 	{
 		int x = rand()%N;
 		int y =	rand()%N;
 		old_gen[x][y]=ALIVE;
 	}
-	
+	}
+	else
+	{
+	if(read_map(old_gen))
+	{
+		printf("Ne mogu otvoriti fajl\n");
+		printf("Pokusajte ponovo pokrenuti program\n");
+		return EXIT_FAILURE;
+	}
+	}
 	print(old_gen);
 	
 	if(init_semaphores())
 	{
-		printf("Greska prilikom inicijalizacije semafora");
+		printf("Greska prilikom inicijalizacije semafora\n");
 		printf("Pokusajte ponovo pokrenuti program\n");
 		return EXIT_FAILURE;
 	}
@@ -253,7 +296,7 @@ int main(int argc,char *argv[])
 		index[i]=i;
 		if(pthread_create(&cells[i],NULL,thread,&index[i]))
 		{
-			printf("Greska prilikom kreiranja niti");
+			printf("Greska prilikom kreiranja niti\n");
 			printf("Pokusajte ponovo pokrenuti program\n");
 			return EXIT_FAILURE;
 		}
@@ -261,7 +304,7 @@ int main(int argc,char *argv[])
 	
 	if(pthread_create(&state,NULL,get_state,NULL))
 	{
-		printf("Greska prilikom kreiranja niti");
+		printf("Greska prilikom kreiranja niti\n");
 		printf("Pokusajte ponovo pokrenuti program\n");
 		return EXIT_FAILURE;
 	}
@@ -273,7 +316,7 @@ int main(int argc,char *argv[])
 	
 	if(destroy_semaphores())
 	{
-		printf("Greska prilikom unistavanja semafora");
+		printf("Greska prilikom unistavanja semafora\n");
 		return EXIT_FAILURE;
 	}
 
