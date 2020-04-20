@@ -62,6 +62,9 @@ void execution_order();//funkcija koja ce da odredi redoslijed izvrsavanje tredo
 
 int main(){
     
+    
+    
+    unsigned int sleep_time;
     char c;
     printf("Izaberite vas sablon-genraciju za razvoj.\n");
     printf("Za zeljeni sablon stisnite dato slovo:\nGlider->g\nOscilator->o\nBeehive->b\nf-Pentomino->f\n");
@@ -69,17 +72,22 @@ int main(){
     
     printf("\n");
     
+    printf("Unesite trajanje spavavja glavne niti(unos u sekundama):");
+    scanf("%d",&sleep_time);
+    
+    
+    
     
     
     execution_order();//odredimo prioritete izvrsavanja
     cell_matrix_init(c);//inicijalizujemo prvu generaciju
     print();//ispisemo prvu generaciju
-    sleep(2);
+    sleep(sleep_time);
     while(1){
         
         thread_matrix_init();//pokrecemo tredove
         print();//ispisujemo svaku sledecu generaciju
-        sleep(2);
+        sleep(sleep_time);
         
         
     }	
