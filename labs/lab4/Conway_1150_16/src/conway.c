@@ -26,6 +26,7 @@ typedef struct{
 static sem_t semafor[DIM][DIM];
 static sem_t main_semafor;
 static pthread_mutex_t cs_mutex;
+static bool KRAJ = false; // Promjenjiva kojom definisemo izlazak iz simulacije!
 
 /* Matrica starih vrijednosti, azuriranih vrijednosti, kao i matrica polje, odnosno elemenata POLJE_MATRICE! */
 static bool matrica_stara[DIM][DIM];
@@ -41,11 +42,13 @@ int kreiranje_polja_matrice(pthread_t elementi_matrice[DIM][DIM]);
 void dodjeljivanje_prioriteta();
 void* funkcija_polja_matrice(void* param);
 int citanje_mape();
+void* funkcija_prekida(void* param);
 
-int main(int c, char **v)
+int main()
 {
 	pthread_t elementi_matrice[DIM][DIM];
-	
+	pthread_t nit_prekida;
+
 	/* Citanje pocetnog stanja mape(matrice)! */
 	if(citanje_mape()){
 		printf("Neuspjesno citanje pocetnog stanja! Matrica ne postoji, ili nije na korektnom mjestu!\n");	
@@ -59,12 +62,15 @@ int main(int c, char **v)
 	}
 
 	if(kreiranje_semafora()){
-		printf("Neuspjesno kreiranje semafora!\n");	
+		printf("Neuspjesno kreiranje semafora!\n");
+		pthread_mutex_destroy(&cs_mutex);
 		return -1;
 	}
 
 	if(kreiranje_polja_matrice(elementi_matrice)){
-		printf("Neuspjesno kreiranje polja matrice!\n");	
+		printf("Neuspjesno kreiranje polja matrice!\n");
+		unistavanje_semafora();
+		pthread_mutex_destroy(&cs_mutex);	
 		return -1;
 	}
 
@@ -74,7 +80,15 @@ int main(int c, char **v)
 		return -1;	
 	}
 
-	while (1) {
+	// Kreiranje niti prekida simulacije!
+	if(pthread_create(&nit_prekida, NULL, funkcija_prekida, NULL)){
+		unistavanje_semafora();
+		pthread_mutex_destroy(&cs_mutex);
+		return -1;
+	}
+	else{}
+
+	while (!KRAJ) {
 		// Stopiranje main niti, dok ne dodje na red!
 		sem_wait(&main_semafor);
 		prikaz(matrica_nova);
@@ -121,12 +135,25 @@ void kopiranje_matrica(){
 			matrica_stara[x][y]=matrica_nova[x][y];
 }
 
+/* Funkcija niti prekida simulacije!*/
+void* funkcija_prekida(void* param){
+	(void)param;
+	char znak;
+	do{
+		znak=getchar();
+		sleep(0.4);
+	}while(znak!='q');
+	KRAJ = true;
+return NULL;
+}
+
+
 /* Funkcija niti pojedinacnog polja matrice! */
 void* funkcija_polja_matrice(void* param){
 
 	POLJE_MATRICE novo_polje = *(POLJE_MATRICE*)param;
 
-	while(1){
+	while(!KRAJ){
 		// Sve niti prilikom kreiranja se stopiraju.
     	sem_wait(&semafor[novo_polje.x_pozicija][novo_polje.y_pozicija]);
 
@@ -215,10 +242,9 @@ void* funkcija_polja_matrice(void* param){
 			}
 		}
 	
-		//printf("%d. [%d][%d], Prioritet: %d\n",b++,novo_polje.x_pozicija,novo_polje.y_pozicija,novo_polje.prioritet);
 		pthread_mutex_unlock(&cs_mutex);
-		//usleep(100); // Lagano "odmaranje"!	
 	}
+return NULL;
 }
 
 int kreiranje_polja_matrice(pthread_t elementi_matrice[DIM][DIM]){
@@ -284,6 +310,9 @@ void prikaz(void *u)
 		printf("\033[E");
 	}
 	fflush(stdout);
+	printf("================================\n");
+	printf("IZLAZ: q + ENTER!\n");
+	printf("================================\n");
 }
  
  
