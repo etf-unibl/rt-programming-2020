@@ -18,11 +18,12 @@ static int lap_counter=0;
 static int staro_stanje[M][N];    
 static int novo_stanje[M][N];
 static pthread_mutex_t mutex;    
-//static pthread_barrier_t barrier;
 static sem_t semafor[M][N];      
 static sem_t glavni_semafor;      
 static CELL mapa[M][N]; 
 static int pobudjenost[M][N];
+//static pthread_barrier_t barrier;
+    int sleep_time;
 
 int odredjivanje_prioriteta(int x,int y){
 	int tmp = 1;
@@ -96,7 +97,7 @@ void *thread_f(void* param){
 		}
             else if(broj_zivih==3)  novo_stanje[pozicija.x][pozicija.y] = 1;
 	        else novo_stanje[pozicija.x][pozicija.y]=staro_stanje[pozicija.x][pozicija.y];
-		if(pozicija.x + 1<=M-1 && (pozicija.y - 2)>=0 && pobudjenost[pozicija.x][pozicija.y]!=0){
+        if(pozicija.x + 1<=M-1 && (pozicija.y - 2)>=0 && pobudjenost[pozicija.x][pozicija.y]!=0){
 				sem_post(&semafor[pozicija.x+1][pozicija.y-2]);
                 pobudjenost[pozicija.x+1][pozicija.y-2]=1;
 		}
@@ -111,11 +112,11 @@ void *thread_f(void* param){
 						}				
 					}
 			}
-        lap_counter++;
+        lap_counter++; 
+        if(lap_counter==N*M) sem_post(&glavni_semafor); 
 		pthread_mutex_unlock(&mutex);
-        //pthread_barrier_wait(&barrier);
-        sem_post(&glavni_semafor);
-        if(lap_counter>=M*N)   sem_post(&glavni_semafor);  
+        if(lap_counter==N*M) sem_post(&glavni_semafor); 
+           else sleep(1);
 	}
 }
 
@@ -123,7 +124,7 @@ void *thread_f(void* param){
 
 int main(int argc, char **argv)
 { 
-    int sleep_time;
+
     char c;
     FILE *fp;
     if(argc != 3)
@@ -170,13 +171,12 @@ int main(int argc, char **argv)
 		printf("Neuspjesno kreiranje mutexa!\n");	
 		return -1;
 	}
-   // pthread_barrier_init(&barrier, NULL, N*M-1);
+    //pthread_barrier_init(&barrier, NULL, N*M);
     update();
     print(staro_stanje);
     sem_post(&semafor[0][0]); 
 	while (1) {
-        lap_counter=1;      //za novu evoluciju resetujemo brojac niti koje su zavrsile svoj posao
-        restart();          //vracamo pobudjenost niti 
+        lap_counter=0;      //za novu evoluciju resetujemo brojac niti koje su zavrsile svoj posao
 		sem_wait(&glavni_semafor);  //pauziramo glavnu nit
         print(novo_stanje);         //ispisujemo trenutno stanje
         update();                   //prebacujemo novo stanje u staro
