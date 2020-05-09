@@ -1,0 +1,1 @@
+cmd_/home/kljestan/Vezba06/kernelApp/proces.ko := /home/kljestan/tools/arm-bcm2708/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-ld -r  -EL -T ./scripts/module-common.lds -T ./arch/arm/kernel/module.lds  --build-id  -o /home/kljestan/Vezba06/kernelApp/proces.ko /home/kljestan/Vezba06/kernelApp/proces.o /home/kljestan/Vezba06/kernelApp/proces.mod.o ;  true
