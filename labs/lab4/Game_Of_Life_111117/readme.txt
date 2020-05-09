@@ -1,5 +1,5 @@
-Testirano rad i kompajliranje za razberi virtuelnu masinu sa  
+Testiran rad i kompajliranje na virtuelnoj masini.
 arm-linux-gnueabihf-gcc -o CON -pthread con.c
 
-Takodje kompajlirano i testirano i na x86 arhitekturi
+Takodje kompajlirano i testirano i na x86 arhitekturi.
 gcc -o CON -pthread con.c
