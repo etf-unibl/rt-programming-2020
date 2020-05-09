@@ -1,0 +1,1 @@
+cmd_/home/sasa/Desktop/vjezba06/modul/sistem.ko := /home/sasa/Desktop/tools/tools/arm-bcm2708/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-ld -r  -EL -T ./scripts/module-common.lds -T ./arch/arm/kernel/module.lds  --build-id  -o /home/sasa/Desktop/vjezba06/modul/sistem.ko /home/sasa/Desktop/vjezba06/modul/sistem.o /home/sasa/Desktop/vjezba06/modul/sistem.mod.o ;  true
