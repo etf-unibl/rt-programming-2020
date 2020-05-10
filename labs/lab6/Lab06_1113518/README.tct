@@ -1,0 +1,34 @@
+U ~/.bashrc namjestene sledece varijable(kao na lab6):
+    export TOOL_PATH=/home/marko/tools/arm-bcm2708/arm-linux-gnueabihf/bin
+    export PATH=$PATH:$TOOL_PATH
+    export ARCH=arm
+    export CROSS_COMPILE=arm-linux-gnueabihf-
+    export KERNEL=kernel7
+    export LINUX_SRC=~/linux
+USER:
+    Kreiranje i kompajliranje iz foldera User:
+        arm-linux-gnueabihf-gcc ./src/conway.c -g3 -o ./bin/conway -lpthread -lrt
+        arm-linux-gnueabihf-strip ./bin/conway -s -o ./bin/conway4target
+    Prebacivanje na pi platvormu iz foldera User:
+        sudo scp -P 5022 ./bin/conway4target pi@localhost:conway4target
+KERNEL:
+    Pokrenuti makefile iz foldera Kernel sa "make" ili "make all";
+    Prebacivanje na pi platvormu iz foldera Kernel:
+        sudo scp -P 5022 sistem.ko pi@localhost:sistem.ko
+
+Pokretanje kernel aplikacije na pi:
+    sudo insmod sistem.ko
+    cd /sys/kernel/stat_sysfs/
+    sudo chmod 666 num_alive
+    sudo chmod 666 num_born
+    sudo chmod 666 num_died
+    sudo chmod 666 gen_num
+    sudo chmod 666 matrix 
+Pokretanje user aplikacije na pi(prvi argument komandne linije je vreme spavanja glavnog sistema u sekundama, drugi argument je izbor da li zelite da ucitate iz pocetne vrednosti celija iz fajla pocetno_stanje.txt(0) ili da se generise random pocetno stanje(1),treci-sedmi argument su OPCIONI za razliku od prva dva i mogu biti sledeci u bilo kojem redosljedu:
+    /sys/kernel/stat_sysfs/num_alive
+    /sys/kernel/stat_sysfs/num_born
+    /sys/kernel/stat_sysfs/num_died
+    /sys/kernel/stat_sysfs/gen_num
+    /sys/kernel/stat_sysfs/matrix  (ne radi nista)
+U fajlu pocetno_stanje.txt unosite vrednosti 1 ili 0 po redovima zavisno ocetel da celija bude ziva ili mrtva na pocetku programa.
+
