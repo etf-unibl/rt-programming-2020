@@ -98,23 +98,44 @@ static unsigned long generation;
 static int is_open=0;
 
 static int device_open(struct inode* in, struct file* filp){
+	/*
+	 * Svaka instanca gol koja hoce da pocne sa izvrsavanjem mora da pokusa da prvo otvori datoteku koja odgovara ovom drajveru.
+	 * Da bi se sprijecio slucaj da vise procesa pristupi datoteci mora da postoji neka kontrola.
+	 * if(is_open!=0){
+	 * 		return -1;
+	 * }
+	 * is_open=1;
+	 * ...
+	 * Gornji kod nije dovoljno siguran jer postoji situacija kada bi 2 procesa mogla da odjednom dobiju pristup datoteci.
+	 * U slucaju da jedan prodje provjeru, ali izgubi vrijeme i ne stigne da uveca is_open. Drugi proces u tom slucaju moze
+	 * da prodje provjeru i izmijeni promjenljivu.
+	 * Posto nisam siguran kako se koristi sinhronizacija na kernelskom nivou koristi se donji kod.
+	 * Prvo se is_open uvecava i onda se vrsi provjera da li je vrijednost veca od 1. Grub nacin zato sto moze da prouzrokuje da neki
+	 * proces iako je prvi stigao opet ne dobije pravo da otvori datoteku, ali situacija da 2 dvije instance programa za igru zivota
+	 * citaju i pisu u datoteku istovremeno sada ne postoji. Da bi proces dobio pravo da udje u datoteku mora da prodje provjeru uslova
+	 * prije nego sto neki drugi proces pokusa uci i uveca promjenljivu. Moze se desiti slucaj cak i da proces koji izlazi iz datoteke
+	 * privremeno blokira one koji pokusavaju da je otvore dok on ne umanji vrijednost is_open pri izlasku, ali to je samo u situaciji ako
+	 * su 2 procesa pokusala pristupiti u relativno bliskom vremenskom intervalu i medjusobno se blokirala pa ih je drajver oba izbacio.
+	 * I prvi metod bi mozda bio dovoljan za ovaj slucaj jer vrijeme koje je potrebno korisniku da pokrene nesto 2 puta je relativno
+	 * veliko u odnosu na procesor, ali sa donjim metodom je sigurno. A sansa da se desi situacija gdje ce oba procesa medjusobno
+	 * izbaciti nije velika niti problematicna, dovoljno je opet pokrenuti igru zivota. 
+	 * */
+	is_open++;
+	if(is_open>1){
+		is_open--;
+		printk(KERN_INFO "Datoteka je vec otvorena ili ju je drugi proces u isto vrijeme pokusao otvoriti!\n");
+		return -1;
+	}
 	generation=0;
 	alive=0;
 	born=0;
 	died=0;
-	//Ovo nije najsigurniji metod za osiguravanje da 2 procesa odjednom ne upisuju, jer je moguca situacija da nakon provjere jedan izgubi
-	//procesorsko vrijeme i ne izmijeni promjenljivu is_open, a nakon toga drugi udje. Ali nisam siguran kako bas odraditi sinhronizaciju
-	//izmedju procesa na kernelskom nivou.
-	if(is_open!=0){
-		printk(KERN_INFO "Datoteka vec otvorena!\n");
-	}
-	is_open=1;
 	printk(KERN_INFO "Datoteka za GOL uspjesno otvorena!\n");
 	return 0;
 }
 
 static int device_release(struct inode* in, struct file* filp){
-	is_open=0;
+	is_open--;
 	printk(KERN_INFO "Datoteka za GOL zatvorena!\n");
 	return 0;
 }
