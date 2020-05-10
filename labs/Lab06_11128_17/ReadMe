@@ -1,0 +1,14 @@
+conway.c kompajlirati sledecim naredbana
+--kros-kompajliranje sa ukljucenim debag informacijama
+        arm-linux-gnueabihf-gcc conway.c -g3 -lpthread -o conway_debug
+--izbacivanje debag informacija prije prebacivanja na raspberry
+        arm-linux-gnueabihf-strip conway_debug -s -o conway_raspberry
+
+procesi.c kompajliran naredbom
+    make all
+
+na raspberry prebaciti
+-- conway_raspberry
+-- proces.ko
+-- matrica
+
