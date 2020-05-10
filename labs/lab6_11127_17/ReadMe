@@ -1,0 +1,24 @@
+**conway.c kompajliran:
+
+arm-linux-gnueabihf-gcc conway.c -g3 -lpthread -o conway
+
+arm-linux-gnueabihf-strip conway -s -o conway_pi
+
+**conway prebacen na raspberry: 
+
+sudo scp -P 5022 conway_pi pi@localhost:~
+
+
+**proces.c kompajliran:
+
+make celan 
+
+make all
+
+**proces prebacen na raspberry:
+
+sudo scp -P 5022 proces.ko pi@localhost:~
+
+**Potrebno prebacti i datoteku iz koje se cita pocetno stanje:
+
+sudo scp -P 5022 matrica.txt pi@localhost:~
