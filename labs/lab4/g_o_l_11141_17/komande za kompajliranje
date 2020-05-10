@@ -1,0 +1,4 @@
+arm-linux-gnueabihf-gcc ./src/conway.c -pthread -std=gnu11 -o  ./bin/conway_rpi
+
+arm-linux-gnueabihf-strip ./bin/conway_rpi -s -o  ./bin/conway_rpi_4target
+
