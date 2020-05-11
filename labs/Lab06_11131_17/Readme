@@ -1,0 +1,1 @@
+I korisnicka i kernel aplikacija se kompajliraju sa naredbom make. Nakon toga se sadrzaj foldera /bin i sistem.ko prebaci na raspberry. Sa sudo cat /sys/kernel/stat_sysfs/stat_value se citaju statisticki podaci iz drajvera.
