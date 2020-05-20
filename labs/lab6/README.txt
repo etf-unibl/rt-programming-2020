@@ -10,7 +10,7 @@
                 sudo make all (ako zelimo igru zivota za nas os)
                 sudo scp -P 5022 matrica.txt pi@localhost:matrica.txt
     U src folderu:
-            arm-linux-gnueabihf-gcc conway.c -g3 -o conwaypi -lpthread -lrt
+            arm-linux-gnueabihf-gcc conway.c -g3 -o conwaypi -lpthread -lrt -std=gnu99
             sudo scp -P 5022 conwaypi pi@localhost:conwaypi
 
     U mod folderu:   
