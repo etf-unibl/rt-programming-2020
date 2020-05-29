@@ -199,13 +199,13 @@
         thread_struct thread_3 ={1, 3, 3, MY_STACK_SIZE, convert_time (thread3_sleep),*thread_func_with_res};
         
         //Start threads
-        pthread_t thread_1 = start_rt_thread (&thread_1);
-        pthread_t thread_2 = start_rt_thread (&thread_2);
-        pthread_t thread_3 = start_rt_thread (&thread_3);
+        pthread_t thread_01 = start_rt_thread (&thread_1);
+        pthread_t thread_02 = start_rt_thread (&thread_2);
+        pthread_t thread_03 = start_rt_thread (&thread_3);
   
-        pthread_join (thread_1, NULL);
-        pthread_join (thread_2, NULL);
-        pthread_join (thread_3, NULL);
+        pthread_join (thread_01, NULL);
+        pthread_join (thread_02, NULL);
+        pthread_join (thread_03, NULL);
   
         printf ("Press <ENTER> to exit\n");
         getchar ();
