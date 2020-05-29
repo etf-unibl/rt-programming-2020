@@ -191,6 +191,7 @@
         
         //Create and inicialize threads
         //Inicialize structure 
+	//Print.Priority,Add to shared res,Add to stack, Thread sleet, Finction pointer
         thread_struct thread_1 ={1, 1, 1, MY_STACK_SIZE, convert_time (thread1_sleep),*thread_func_with_res};
         thread_struct thread_2 ={1, 2, 2, MY_STACK_SIZE, convert_time (thread2_sleep),*thread_func_with_no_res};
         thread_struct thread_3 ={1, 3, 3, MY_STACK_SIZE, convert_time (thread3_sleep),*thread_func_with_res};
