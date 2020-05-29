@@ -29,7 +29,7 @@
     } thread_struct;
 
     static int shared_val = 0;
-    
+    static pthread_mutexattr_t mtx_attr;
     static pthread_mutex_t mtx;
 
  
@@ -181,25 +181,27 @@
     }
 
     int main (){
+        
         int error;
-        if ((error = pthread_mutex_init (&mtx)) != 0){			
-            printf ("Error initializing mutex, error=%d\n", error);
-            exit (error);
+        if ((error = pthread_mutexattr_init(&mtx_attr))!=0){
+            printf("Error in attribute inicialization, error %d\n",error);
         }
+        if ((error= pthread_mutex_init(&mtx, &mtx_attr))!=0)
+		    printf("Error in attribute inicialization, error %d\n",error);
+        }
+        
         configure_malloc_behavior ();
         reserve_process_memory (PRE_ALLOCATION_SIZE);
         
         //Create and inicialize threads
-        //Inicialize structure 
-	//Print.Priority,Add to shared res,Add to stack, Thread sleet, Finction pointer
         thread_struct thread_1 ={1, 1, 1, MY_STACK_SIZE, convert_time (thread1_sleep),*thread_func_with_res};
         thread_struct thread_2 ={1, 2, 2, MY_STACK_SIZE, convert_time (thread2_sleep),*thread_func_with_no_res};
         thread_struct thread_3 ={1, 3, 3, MY_STACK_SIZE, convert_time (thread3_sleep),*thread_func_with_res};
         
         //Start threads
-        pthread_t thread_1 = start_rt_thread (&thread1);
-        pthread_t thread_2 = start_rt_thread (&thread2);
-        pthread_t thread_3 = start_rt_thread (&thread3);
+        pthread_t thread_1 = start_rt_thread (&thread_1);
+        pthread_t thread_2 = start_rt_thread (&thread_2);
+        pthread_t thread_3 = start_rt_thread (&thread_3);
   
         pthread_join (thread_1, NULL);
         pthread_join (thread_2, NULL);
@@ -207,8 +209,10 @@
   
         printf ("Press <ENTER> to exit\n");
         getchar ();
-        pthread_mutex_destroy (&mtx);
-    
+     
+        pthread_mutexattr_destroy(&mtx_attr); 
+	pthread_mutex_destroy(&mtx);
+        
         return 0;
 
 }
