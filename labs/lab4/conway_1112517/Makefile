@@ -1,3 +1,4 @@
+
 DESTDIR?=/usr
 PREFIX?=/local
 LOCAL_INCL=./inc
@@ -8,16 +9,16 @@ endif
 
 #DEBUG	= -g -O0
 DEBUG		= -O2
-CC		    =  arm-linux-gnueabihf-gcc
+CC		= gcc
 INCLUDE		= -I$(DESTDIR)$(PREFIX)/include -I$(LOCAL_INCL)
-CFLAGS		= $(DEBUG) -Wall -Wextra $(INCLUDE) -Winline -pipe -std=c11
+CFLAGS		= $(DEBUG) -Wall -Wextra $(INCLUDE) -Winline -pipe
 
 LDFLAGS		= -L$(DESTDIR)$(PREFIX)/lib
-LIBS    	= -lpthread -lrt -lm -lcrypt 
+LIBS    	= -lpthread -lrt
 SRC_DIR 	= src
 OUT_DIR		= bin
 OBJ_DIR		= obj
-EXEC_NAME 	= conway_rpi
+EXEC_NAME 	= conway
 
 # May not need to  alter anything below this line
 ###############################################################################

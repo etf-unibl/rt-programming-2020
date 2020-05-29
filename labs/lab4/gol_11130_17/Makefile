@@ -8,15 +8,15 @@ endif
 
 #DEBUG	= -g -O0
 DEBUG		= -O2
-CC		    =  gcc
+CC		    =  gcc 
 INCLUDE		= -I$(DESTDIR)$(PREFIX)/include -I$(LOCAL_INCL)
-CFLAGS		=   $(INCLUDE)   -std=c99
+CFLAGS		=   $(INCLUDE)   -std=gnu99
 LDFLAGS		= -L$(DESTDIR)$(PREFIX)/lib
 LIBS    	= -lpthread  
 SRC_DIR 	= src
 OUT_DIR		= bin
 OBJ_DIR		= obj
-EXEC_NAME 	= conway
+EXEC_NAME 	= conway_pc
 
 # May not need to  alter anything below this line
 ###############################################################################
