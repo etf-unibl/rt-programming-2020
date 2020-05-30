@@ -99,7 +99,7 @@
         //How much the thread will sleep 
         float temp = 0;
         if (thread.thread_priority == 1){
-            temp = thread1_sleep + thread3_sleep;
+            temp = thread2_sleep + thread3_sleep;
         }
         else{
             temp = thread3_sleep;
