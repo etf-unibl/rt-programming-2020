@@ -186,7 +186,7 @@
         if ((error = pthread_mutexattr_init(&mtx_attr))!=0){
             printf("Error in attribute inicialization, error %d\n",error);
         }
-        if ((error= pthread_mutex_init(&mtx, &mtx_attr))!=0)
+        if ((error= pthread_mutex_init(&mtx, &mtx_attr))!=0){
 		    printf("Error in attribute inicialization, error %d\n",error);
         }
         
