@@ -64,8 +64,16 @@ void task2(void)
 }
 
 
-void *start_work (void *arg){
-    struct periodic_info info;
+int main(int argc, char *argv[])
+{
+    
+	sigset_t alarm_sig;
+
+	sigemptyset(&alarm_sig);
+	sigaddset(&alarm_sig, SIGALRM);
+	sigprocmask(SIG_BLOCK, &alarm_sig, NULL);
+
+   struct periodic_info info;
     //Minimum common period is 20ms for 60ms and 80ms tasks   	
    	make_periodic(20000, &info);
     
@@ -77,28 +85,9 @@ void *start_work (void *arg){
         task2();
     }
     
-}
-
-int main(int argc, char *argv[])
-{
-	int err_code;
-	pthread_t thread_1;
-	pthread_t thread_2;
-	sigset_t alarm_sig;
-
-	sigemptyset(&alarm_sig);
-	sigaddset(&alarm_sig, SIGALRM);
-	sigprocmask(SIG_BLOCK, &alarm_sig, NULL);
-
-	pthread_create(&thread_1, NULL, start_work, NULL);
-	pthread_create(&thread_2, NULL, start_work, NULL);
-
-   
-    if (err_code=((pthread_join (thread_1, NULL))!= 0 && pthread_join (thread_2, NULL)!=0))
-	    printf ("Error joining thread , error=%d\n", err_code);
-
 	return 0;
 }
+
 
 
 
