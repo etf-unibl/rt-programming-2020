@@ -1,0 +1,20 @@
+periodic_task_abs_time.c kompajlirati sledecim naredbana
+
+--linux
+        gcc -Wall periodic_task_abs_time.c -lpthread -lrt -o periodic_task_abs_time
+
+--kros-kompajliranje sa ukljucenim debag informacijama
+        arm-linux-gnueabihf-gcc periodic_task_abs_time.c -std=gnu99 -Wall -g3 -lpthread -o periodic_task_abs_time_debug
+
+--izbacivanje debag informacija prije prebacivanja na raspberrypi
+        arm-linux-gnueabihf-strip periodic_task_abs_time_debug -s -o periodic_task_abs_time_raspberrypi
+
+
+na raspberrypi prebaciti
+
+-- periodic_task_abs_time_raspberrypi
+        sudo scp -P 5022 periodic_task_abs_time_raspberrypi pi@localhost:~
+
+
+
+
