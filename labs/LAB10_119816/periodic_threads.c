@@ -7,19 +7,19 @@
 #include <sys/time.h>
 
 struct periodic_info {
-    int id;
-    int sig;
+    	int id;
+    	int sig;
 	sigset_t alarm_sig;
 };
 
 pthread_mutex_t mutex;
-
+//Increased the computation load of the tasks so that the requested time is longer
 void task1(void)
 {
   int i,j;
  
   for (i=0; i<4; i++) {
-    for (j=0; j<250000; j++) ;
+    for (j=0; j<250000; j++) ;//for (j=0;j<1000;j++);
     printf("1");
     fflush(stdout);
   }
@@ -30,7 +30,7 @@ void task2(void)
   int i,j;
 
   for (i=0; i<6; i++) {
-    for (j=0; j<2500000; j++) ;
+    for (j=0; j<2500000; j++) ; //for (j=0;j<10000;j++)
     printf("2");
     fflush(stdout);
   }
@@ -70,7 +70,7 @@ static void wait_period(struct periodic_info *info,int Signal)
     	    
 	}
 	else if(info->sig==Signal){
-	 thread_suspend(info->id,79000);
+	thread_suspend(info->id,79000);
 	 //sigwait(&(info->alarm_sig), &sig);  
 	 
 	}
@@ -81,7 +81,7 @@ static int start_periodic(unsigned int period, struct periodic_info *info)
 {
 	int err_code;
 	struct itimerval value;
-    static int next_sig;
+   	static int next_sig;
 
     if (next_sig == 0)
 		next_sig = SIGRTMIN;
@@ -119,7 +119,7 @@ static void *thread_func_1(void *arg)
 	struct periodic_info info;
 	info.id=1;
 	start_periodic(60000, &info);
-int	signal_1=info.sig;
+	int signal_1=info.sig;
 	while (1) {
 		task1();
 		wait_period(&info,signal_1);
@@ -130,9 +130,9 @@ int	signal_1=info.sig;
 static void *thread_func_2(void *arg)
 {
 	struct periodic_info info;
-    info.id=2;
-	start_periodic(80000, &info);
-    int	signal_2=info.sig;
+    	info.id=2;
+    	start_periodic(80000, &info);
+    	int signal_2=info.sig;
 	while (1) {
 		task2();
 		wait_period(&info,signal_2);
