@@ -68,7 +68,8 @@ int main(int argc, char *argv[])
 {
     
 	sigset_t alarm_sig;
-
+	inc count_1=0;
+	int count_2=0;
 	sigemptyset(&alarm_sig);
 	sigaddset(&alarm_sig, SIGALRM);
 	sigprocmask(SIG_BLOCK, &alarm_sig, NULL);
@@ -76,14 +77,13 @@ int main(int argc, char *argv[])
    struct periodic_info info;
     //Minimum common period is 20ms for 60ms and 80ms tasks   	
    	make_periodic(20000, &info);
-    
-    while(1){
-    
-        wait_period(&info);
-        wait_period(&info);
-        task1();
-        task2();
-    }
+   	while(1){
+		wait_period(&info);
+		if(count_1==3){ task1(); count_1=0;}
+		if (count_2==4) { task2(); count_2=0;}
+		count_1++; 
+        	count_2++;		
+	}
     
 	return 0;
 }
