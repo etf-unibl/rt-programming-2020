@@ -1,0 +1,21 @@
+'rasporedjivanje.c' i 'procesi.c' kompajlirati sledecim naredbana
+
+--linux
+        gcc -Wall procesi.c -lpthread -lrt -o procesi
+        gcc -Wall rasporedjivanje.c -lpthread -lrt -o rasporedjivanje
+
+--kros-kompajliranje sa ukljucenim debag informacijama
+        arm-linux-gnueabihf-gcc procesi.c -std=gnu99 -Wall -g3 -lpthread -o procesi_debug
+        arm-linux-gnueabihf-gcc rasporedjivanje.c -std=gnu99 -Wall -g3 -lpthread -o rasporedjivanje_debug
+
+--izbacivanje debag informacija prije prebacivanja na raspberrypi
+        arm-linux-gnueabihf-strip procesi_debug -s -o procesi
+        arm-linux-gnueabihf-strip rasporedjivanje_debug -s -o rasporedjivanje
+
+na raspberrypi prebaciti
+
+-- rasporedjivanje i procesi
+        sudo scp -P 5022 rasporedjivanje procesi pi@localhost:~
+
+
+
