@@ -1,0 +1,10 @@
+## ZADATAK
+	Kreiranje tri periodicna taska, sa periodima 40ms, 80ms te 120ms, koristeci tri stvarna procesa koji se rasporedjuju pomocu FIFO politike rasporedjivanja. Pored toga, svaki proces karakterise odgovarajuci prioritet, pri cemu vazi, da proces sa najmanjim periodom ponavljanja, ima najvisi prioritet, i obrnuto. Kreiranje procesa obavlja glavni proces, koriscenjem naredbe "fork()", pri cemu za kreiranje datih procesa, koristimo for petlju. U datoj petlji, prilikom kreiranja, imamo if uslove, kojima provjeravamo uspjesnost kreiranja, kao i to da li je trenutno izvrsavani proces, child proces, ili parent proces. Parent proces ceka na sve kreirane child procese, za sta se koristi naredba "wait()". Ukoliko imamo izvrsavanje child procesa, uz odgovarajuci element strukture, direktno upravljamo funkcijom koja dati proces karakterise, kao i ostalim parametrima(Period ponavljanja, pocetni offset ukljucenja i slicno). Dati parametri, kao i funkcije koje definisu procese, nalaze se unutar fajla "data.h", koji je neophodno ukljuciti na pocetku, kako bismo imali korektan pristup. Dodatno, imamo i funkciju "print_child_status()", koja sluzi za ispis rezultatnog statusa child procesa, na kome se zasniva cekanje parent procesa, medjutim, kako proces karakterise beskonacno periodicno izvrsavanje, do tog dijela zapravo izvrsavanje programa nece ni doci, osim ukoliko uslov beskonacnosti "while(1)", ne zamjenimo sa konacnim brojem izvrsavanja("int broj_ponavljanja=10", je jedan od mogucih scenarija)!
+
+### Kompajliranje + Prebacivanje na RPI:
+	Kroskompajliranje, kao i prebacivanje na RPI platformu, vrsi se pomocu skripte "skripta.sh". Unutar nje, definisan je port za prebacivanje, zeljena putanja, direktorijum i slicno.
+	Kompajliranje se takodje moze vrsiti i za host racunar, pri cemu se koristi skripta "skripta_gcc", ali treba da vodimo racuna o tome da nemamo mogucnost rada u realnom vremenu, koje nije podrzano.
+### Pokretanje:
+	Pokretanje se vrsi sa "sudo ./naziv_izvrsnog_objekta"
+
+

@@ -11,9 +11,9 @@
 
 /* Enumeracija vremena aktivacije! */
 enum VREMENA {   OFFSET_0 = 1000000,
-				 OFFSET_1 = 600000,	    //600ms!
-				 PERIOD_0 = 2000000,
-				 PERIOD_1 = 800000		//800ms!
+				 OFFSET_1 = 2000000,	    
+				 PERIOD_0 = 60000,	//60ms!
+				 PERIOD_1 = 80000	//80ms!
 				};
 
 
